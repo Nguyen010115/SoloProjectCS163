@@ -20,15 +20,23 @@ add_subdirectory(raylib)
 add_executable(${PROJECT_NAME}
     src/main.cpp
     render/menu_render.cpp
- "render/hash_table_render.cpp" "render/button.cpp")
+ "render/hash_table.cpp" "render/button.cpp" "render/hash_table.h" "render/animation.h"  "render/bee.cpp" "render/bee.h" "render/avltree.cpp" "render/avltree.h")
 
 target_link_libraries(${PROJECT_NAME} raylib)
 
-add_custom_target(copy_resources ALL
+# Copy images directory
+add_custom_target(copy_resources_images ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/resources/images
     ${CMAKE_BINARY_DIR}/resources/images
 )
 
-# Ensure the copy_resources target runs before the executable
-add_dependencies(${PROJECT_NAME} copy_resources)
+# Copy fonts directory
+add_custom_target(copy_resources_fonts ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/resources/fonts
+    ${CMAKE_BINARY_DIR}/resources/fonts
+)
+
+# Ensure the images and fonts are copied before building the executable
+add_dependencies(${PROJECT_NAME} copy_resources_images copy_resources_fonts)

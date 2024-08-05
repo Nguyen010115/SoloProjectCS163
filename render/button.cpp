@@ -21,3 +21,17 @@ bool checkCollision(Rectangle& button) {
     }
     return false;  // Mouse cursor is outside the button rectangle
 }
+
+void setupButton(Rectangle& button, float x, float y, float width, float height) {
+    button.x = x;
+    button.y = y;
+    button.width = width;
+    button.height = height;
+}
+
+void setupButtonScale(Rectangle& button, float x, float y, float wide, float height) {
+    button.x = x*constants::scaling;
+    button.y = y*constants::scaling;
+    button.width = wide * constants::scaling;
+    button.height = height * constants::scaling;
+}

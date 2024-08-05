@@ -2,18 +2,50 @@
 #include "constant.h"
 #include "raylib.h"
 
-Texture2D buttonImage;
 Texture2D menuBG;
+Texture2D hashtableBG;
+Texture2D honeycomb;
+Texture2D honeydrop;
+Texture2D beeImage;
+Texture2D insertSection;
+Texture2D deleteSection;
+Texture2D createSection;
+
+Font font;
+
+Color darkGreen;
+
 Rectangle menuOptions[constants::MAX_DS_COUNT];
 
 void initImages() {
-    buttonImage = LoadTexture("resources/images/hashtable_demo.png");
+    Color darkGreen = {50, 98, 14, 255 };
+
+    font = LoadFont("resources/fonts/ComicSansMS3.ttf");
+
     menuBG = LoadTexture("resources/images/menu_demo.png");
+    hashtableBG = LoadTexture("resources/images/hashtable_BG.png");
+    honeycomb = LoadTexture("resources/images/honeycomb.png");
+    honeydrop = LoadTexture("resources/images/honeydrop.png");
+    beeImage = LoadTexture("resources/images/flippedBee.png");
+    insertSection = LoadTexture("resources/images/insertSection.png");
+    deleteSection = LoadTexture("resources/images/deleteSection.png");
+    createSection = LoadTexture("resources/images/createSection.png");
+
+
 };
 
-void unloadImages() {
-    UnloadTexture(buttonImage);
+void unloadAll() {
+    UnloadFont(font);
+
     UnloadTexture(menuBG);
+    UnloadTexture(hashtableBG);
+    UnloadTexture(honeycomb);
+    UnloadTexture(honeydrop);
+    UnloadTexture(beeImage);
+    UnloadTexture(insertSection);
+    UnloadTexture(deleteSection);
+    UnloadTexture(createSection);
+
 };
 
 void initializeMenu() {
@@ -26,18 +58,68 @@ void initializeMenu() {
     }
 };
 
-void renderMenu(Screen& currentScreen) {
+void initAll() {
+    initImages();
     initializeMenu();
+    initializeHash();
+};
 
+void renderMenu(Screen& currentScreen) {
     DrawTexture(menuBG, 0, 0, WHITE);
 
     for (int i = 0; i < constants::MAX_DS_COUNT; i++)  
     {
-        if (checkCollision(menuOptions[i])) DrawRectangleRec(menuOptions[i], Color{ 0, 0, 255, 32 });
+        if (checkCollision(menuOptions[i])) DrawRectangleRec(menuOptions[i], Color{ 255, 255, 0, 64 });
     }
 
     for (int i = 0; i < constants::MAX_DS_COUNT; i++)
     {
         if (checkClick(menuOptions[i])) currentScreen = constants::dataName[i];
+    }
+};
+
+Vector2 CalculateCenteredTextPosition(Vector2 texturePos, float textureWidth, float textureHeight, const char* text, int fontSize) {
+    int textWidth = MeasureText(text, fontSize);
+    int textHeight = fontSize; // Height is roughly equal to the font size
+
+    Vector2 centerPos;
+    centerPos.x = texturePos.x + (textureWidth / 2.0f) - (textWidth / 2.0f);
+    centerPos.y = texturePos.y + (textureHeight / 2.0f) - (textHeight / 2.0f);
+
+    return centerPos;
+};
+
+void render(Screen& currentScreen) {
+    switch (currentScreen)
+    {
+    case MENU:
+    {
+        renderMenu(currentScreen);
+    } break;
+    case HASHTABLE:
+    {
+        renderHashTable(currentScreen);
+    } break;
+    case AVLTREE:
+    {
+        renderAVLtree(currentScreen);
+    } break;
+    case TREE234:
+    {
+        //renderHashTable(currentScreen);
+    } break;
+    case MINHEAP:
+    {
+        //renderHashTable(currentScreen);
+    } break;
+    case TRIE:
+    {
+        //renderHashTable(currentScreen);
+    } break;
+    case GRAPH:
+    {
+        //renderHashTable(currentScreen);
+    } break;
+    default: break;
     }
 };
