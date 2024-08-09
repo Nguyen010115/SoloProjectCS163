@@ -19,6 +19,5 @@ int main() {
             render(currentScreen);
         EndDrawing();
     }
-
     unloadAll;
  }

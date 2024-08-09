@@ -4,6 +4,11 @@
 
 Texture2D menuBG;
 Texture2D hashtableBG;
+Texture2D avlBG;
+Texture2D pauseButImg;
+Texture2D playButImg;
+Texture2D slidingBut;
+
 Texture2D honeycomb;
 Texture2D honeydrop;
 Texture2D beeImage;
@@ -24,12 +29,20 @@ void initImages() {
 
     menuBG = LoadTexture("resources/images/menu_demo.png");
     hashtableBG = LoadTexture("resources/images/hashtable_BG.png");
+    avlBG = LoadTexture("resources/images/avl_BG.png");
+
     honeycomb = LoadTexture("resources/images/honeycomb.png");
     honeydrop = LoadTexture("resources/images/honeydrop.png");
     beeImage = LoadTexture("resources/images/flippedBee.png");
     insertSection = LoadTexture("resources/images/insertSection.png");
     deleteSection = LoadTexture("resources/images/deleteSection.png");
     createSection = LoadTexture("resources/images/createSection.png");
+    pauseButImg = LoadTexture("resources/images/pausebutton.png");
+    playButImg = LoadTexture("resources/images/playbutton.png");
+    slidingBut = LoadTexture("resources/images/slidingbar-button.png");
+
+
+
 
 
 };
@@ -62,6 +75,7 @@ void initAll() {
     initImages();
     initializeMenu();
     initializeHash();
+    initializeAVL();
 };
 
 void renderMenu(Screen& currentScreen) {

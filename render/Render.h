@@ -2,7 +2,7 @@
 #include <iostream>
 #include "raylib.h"
 #include "constant.h"
-#include <cmath>
+#include <math.h>
 #include <vector>
 #include <list>
 #include <utility>
@@ -15,12 +15,17 @@
 
 
 
-extern Rectangle hashtableOptions[4];
-extern Rectangle returnBar;
-extern Rectangle returnButton;
 
 extern Texture2D menuBG;
 extern Texture2D hashtableBG;
+extern Texture2D avlBG;
+extern Texture2D pauseButImg;
+extern Texture2D playButImg;
+extern Texture2D slidingBut;
+
+
+
+
 extern Texture2D honeycomb;
 extern Texture2D honeydrop;
 extern Texture2D beeImage;
@@ -32,6 +37,39 @@ extern Font font;
 
 extern Color darkGreen;
 
+
+//Components
+
+
+extern Rectangle hashtableOptions[4];
+extern Rectangle returnBar;
+extern Rectangle returnButton;
+extern Rectangle randomInsert;
+extern Rectangle inputSection;
+extern Rectangle okInput;
+
+extern Rectangle deleteSectionBox;
+extern Rectangle okDelete;
+
+extern Rectangle searchSectionBox;
+extern Rectangle okSearch;
+
+extern Rectangle sizeSectionBox;
+extern Rectangle randomSectionBox;
+extern Rectangle okRandom;
+
+
+extern Rectangle random1Section;
+extern Rectangle ok1random;
+extern Rectangle randomCreate;
+
+extern Rectangle backWard;
+extern Rectangle forWard;
+extern Rectangle pauseButton;
+extern Rectangle slidingButton;
+
+
+extern constexpr int MaxNodes = 257;
 
 
 //Menu
@@ -76,4 +114,17 @@ void setupButtonScale(Rectangle& button, float x, float y, float wide, float hei
 
 
 //AVL Tree
+
+void initializeAVL();
+
 void renderAVLtree(Screen& currentScreen);
+
+void avlInteracting(Interact& state);
+
+void avlInsert(Interact& state);
+
+void avlDelete(Interact& state);
+
+void avlSearch(Interact& state);
+
+void avlCreate(Interact& state);

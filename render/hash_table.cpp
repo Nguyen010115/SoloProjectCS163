@@ -33,7 +33,7 @@ void Key::drawKey() const {
 };
 
 
-/////////////////////////////// Hash Table Class
+//Hash Table Class
 // Constructor
 HashTable::HashTable(int size) : tableSize(size) {
     if (size > 12) scale = 12.0f / static_cast<float>(size);
@@ -373,20 +373,26 @@ Rectangle sizeSectionBox;
 Rectangle randomSectionBox;
 Rectangle okRandom;
 
+Rectangle random1Section;
+Rectangle ok1random;
+Rectangle randomCreate;
+
+
 
 
 
 extern HashTable hashTable(12);
-int N = 12; //Size of key
-int M = 6; //Size of random array
 char inputNumber[3] = "\0";
 int numCount = 0;
-
 char inputRandom[3] = "\0";
 int randomCount = 0;
-
 float timePassed = 0.0f;
 
+
+Rectangle backWard;
+Rectangle forWard;
+Rectangle pauseButton;
+Rectangle slidingButton;
 
 
 void initializeHash() {
@@ -416,13 +422,24 @@ void initializeHash() {
     setupButtonScale(randomSectionBox, 495.8f, 792.7f, 68.2f, 37.2f);
 
     setupButtonScale(okRandom, 575.0f, 792.3f, 36.6f, 36.6f);
+
+    setupButtonScale(random1Section, 192.3f, 792.7f, 68.2f, 37.2f);
+    setupButtonScale(ok1random, 281.4f, 792.6f, 36.6f, 36.6f);
+    setupButtonScale(randomCreate, 339.1f, 790.7f, 40.3f, 40.6f);
+
+    setupButtonScale(backWard, 830.7f, 987.2f, 65.5f, 56.8f);
+    setupButtonScale(forWard, 1006.3f, 987.2f, 65.5, 56.8);
+    setupButtonScale(pauseButton, 916.4f, 980.7f, 69.7f, 69.7f);
+    setupButtonScale(slidingButton, 1123.9f, 984.6f, 55.0f, 48.0f);
+
+
 };
 
-bool check = false;
-bool interacting = false;
-Interact curInteract = REST;
-bool inputClick = false;
-bool randomClick = false;
+ bool check = false;
+ bool interacting = false;
+ Interact curInteract = REST;
+ bool inputClick = false;
+ bool randomClick = false;
 
 void renderHashTable(Screen& currentScreen) {
     DrawTexture(hashtableBG, 0, 0, WHITE);
@@ -486,6 +503,8 @@ void hashInsert(Interact& state) {
         DrawRectangleRec(inputSection, Color{ 0, 255, 0, 32 });
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
+    else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
     
     if (checkClick(inputSection)) inputClick = true;
     else if (!checkClick(inputSection) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) inputClick = false;
@@ -556,6 +575,8 @@ void hashDelete(Interact& state) {
         DrawRectangleRec(deleteSectionBox, Color{ 0, 255, 0, 32 });
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
+    else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
 
     if (checkClick(deleteSectionBox)) inputClick = true;
     else if (!checkClick(deleteSectionBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) inputClick = false;
@@ -618,6 +639,8 @@ void hashSearch(Interact& state) {
         DrawRectangleRec(searchSectionBox, Color{ 0, 255, 0, 32 });
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
+    else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
 
     if (checkClick(searchSectionBox)) inputClick = true;
     else if (!checkClick(searchSectionBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) inputClick = false;
@@ -679,10 +702,13 @@ void hashCreate(Interact& state) {
         DrawRectangleRec(sizeSectionBox, Color{ 0, 255, 0, 32 });
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
-    if (checkCollision(randomSectionBox)) {
+
+    else if (checkCollision(randomSectionBox)) {
         DrawRectangleRec(randomSectionBox, Color{ 0, 255, 0, 32 });
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
+    else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
 
     if (checkClick(sizeSectionBox)) inputClick = true;
     else if (!checkClick(sizeSectionBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) inputClick = false;
