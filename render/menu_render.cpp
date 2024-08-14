@@ -76,6 +76,7 @@ void initAll() {
     initializeMenu();
     initializeHash();
     initializeAVL();
+    initialize234Tree();
 };
 
 void renderMenu(Screen& currentScreen) {
@@ -120,7 +121,7 @@ void render(Screen& currentScreen) {
     } break;
     case TREE234:
     {
-        //renderHashTable(currentScreen);
+        render234Tree(currentScreen);
     } break;
     case MINHEAP:
     {

@@ -20,7 +20,7 @@ add_subdirectory(raylib)
 add_executable(${PROJECT_NAME}
     src/main.cpp
     render/menu_render.cpp
- "render/hash_table.cpp" "render/button.cpp" "render/hash_table.h" "render/animation.h"  "render/bee.cpp" "render/bee.h" "render/avltree.cpp" "render/avltree.h")
+ "render/hash_table.cpp" "render/button.cpp" "render/hash_table.h" "render/animation.h"  "render/bee.cpp" "render/bee.h" "render/avltree.cpp" "render/avltree.h" "render/234Tree.h" "render/234Tree.cpp" "render/minheap.cpp" "render/minheap.h")
 
 target_link_libraries(${PROJECT_NAME} raylib)
 

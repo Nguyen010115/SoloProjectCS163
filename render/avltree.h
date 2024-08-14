@@ -45,14 +45,13 @@ public:
 	avlTree();
 	~avlTree();
 
-	avlNode* insertRecursive(avlNode* node, int value);
-	avlNode* removeRecursive(avlNode* node, int value);
-	void updateHeightAndBalance(avlNode* node);
+	avlNode* insertRecursive(avlNode* &node, int value, bool& inserted);
+		void updateHeightAndBalance(avlNode* node);
 	int getHeight(avlNode* node);
 	int getBalance(avlNode* node);
-	avlNode* rotateLeft(avlNode* node);
-	avlNode* rotateRight(avlNode* node);
-	avlNode* balanceTree(avlNode* node);
+	avlNode* rotateLeft(avlNode* &node);
+	avlNode* rotateRight(avlNode* &node);
+	avlNode* balanceTree(avlNode* &node);
 	void updateHeight(avlNode* node);
 	void updateBalance(avlNode* node);
 	avlNode* deleteRecursive(avlNode* node, int value);

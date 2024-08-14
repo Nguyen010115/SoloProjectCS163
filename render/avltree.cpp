@@ -70,19 +70,21 @@ void avlNode::fadein(float deltaTime)
 
 
 void avlTree::insert(int value) {
-    root = insertRecursive(root, value);
+    bool inserted = false;
+    root = insertRecursive(root, value, inserted);
     updatePositions();
     updateEdges();
     //std::cout << std::endl << "Insert1";
     copyTree();
 }
 
-avlNode* avlTree::insertRecursive(avlNode* node, int value) {
+avlNode* avlTree::insertRecursive(avlNode* &node, int value, bool &inserted) {
     if (node == nullptr) {
         avlNode* temp = new avlNode(value);
         temp->pos = size;
         nodeList.push_back(temp);
         size++;
+        //inserted = true;
         if (root == NULL) {
             root = temp;
             updatePositions();
@@ -107,13 +109,13 @@ avlNode* avlTree::insertRecursive(avlNode* node, int value) {
     if (value < node->value) {
         node->alphavisiting = 0.0f;
         node->visiting = false;
-        node->left = insertRecursive(node->left, value);
+        node->left = insertRecursive(node->left, value, inserted);
         if (node->left) node->left->parent = node;
     }
     else if (value > node->value) {
         node->alphavisiting = 0.0f;
         node->visiting = false;
-        node->right = insertRecursive(node->right, value);
+        node->right = insertRecursive(node->right, value, inserted);
         if (node->right) node->right->parent = node;
     }
     else {
@@ -129,8 +131,10 @@ avlNode* avlTree::insertRecursive(avlNode* node, int value) {
     updatePositions();
     updateEdges();
 
-    std::cout << std::endl << "Balance";
-    copyTree();
+    if (!inserted) {
+        copyTree();
+        inserted = true;
+    }
 
     
     return balanceTree(node);
@@ -152,7 +156,7 @@ void avlTree::updateBalance(avlNode* node) {
     node->balance = leftHeight - rightHeight;
 }
 
-avlNode* avlTree::rotateLeft(avlNode* node) {
+avlNode* avlTree::rotateLeft(avlNode* &node) {
 
     avlNode* newRoot = node->right;
     node->right = newRoot->left;
@@ -175,7 +179,7 @@ avlNode* avlTree::rotateLeft(avlNode* node) {
     return newRoot;
 }
 
-avlNode* avlTree::rotateRight(avlNode* node) {
+avlNode* avlTree::rotateRight(avlNode* &node) {
     avlNode* newRoot = node->left;
     node->left = newRoot->right;
     if (newRoot->right != nullptr) {
@@ -197,7 +201,7 @@ avlNode* avlTree::rotateRight(avlNode* node) {
     return newRoot;
 }
 
-avlNode* avlTree::balanceTree(avlNode* node) {
+avlNode* avlTree::balanceTree(avlNode* &node) {
     if (node == nullptr) return nullptr;
 
     node->alphavisiting = 1.0f;
@@ -210,6 +214,7 @@ avlNode* avlTree::balanceTree(avlNode* node) {
         node->balanceVisit = false;
         if (node->left != nullptr && node->left->balance < 0) {
             node->left = rotateLeft(node->left);
+            copyTree();
         }
         node = rotateRight(node);
     }
@@ -220,6 +225,7 @@ avlNode* avlTree::balanceTree(avlNode* node) {
         node->balanceVisit = false;
         if (node->right != nullptr && node->right->balance > 0) {
             node->right = rotateRight(node->right);
+            copyTree();
         }
         node = rotateLeft(node);
     }
@@ -392,8 +398,8 @@ void avlTree::updateState(int& stateIndex, float& elapsedTime, float deltaTime) 
         if (i < curList.size()) curList[i] = mixedNode;
         else curList.push_back(mixedNode);
     }
-    std::cout << std::endl;
-    std::cout << stateIndex << " " << steps.size() - 1 << std::endl;
+    /*std::cout << std::endl;
+    std::cout << stateIndex << " " << steps.size() - 1 << std::endl;*/
   /* for (avlNode* node : curList) {
         std::cout << "Value: " << node->value << ", Pos: " << node->pos
             << ", Height: " << node->height << ", Balance: " << node->balance
@@ -767,6 +773,7 @@ bool isDragging = false;
 void renderAVLtree(Screen& currentScreen) {
 	DrawTexture(avlBG, 0, 0, WHITE);
     deltaTime = GetFrameTime();
+
 
     if (!pause) DrawTexture(pauseButImg, pauseButton.x, pauseButton.y, WHITE);
     else DrawTexture(playButImg, pauseButton.x, pauseButton.y, WHITE);

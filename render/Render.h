@@ -128,3 +128,20 @@ void avlDelete(Interact& state);
 void avlSearch(Interact& state);
 
 void avlCreate(Interact& state);
+
+
+//234 Tree
+
+void initialize234Tree();
+
+void render234Tree(Screen &currentScreen);
+
+void tree234Interacting(Interact& state);
+
+void tree234Insert(Interact& state);
+
+void tree234Delete(Interact& state);
+
+void tree234Search(Interact& state);
+
+void tree234Create(Interact& state);
