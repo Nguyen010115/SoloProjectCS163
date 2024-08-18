@@ -12,8 +12,8 @@
 #include <optional>
 #include <thread>
 #include <chrono>
-
-
+#include "file_select.h"
+#include <cstdlib>
 
 
 extern Texture2D menuBG;
@@ -41,7 +41,7 @@ extern Color darkGreen;
 //Components
 
 
-extern Rectangle hashtableOptions[4];
+extern Rectangle hashtableOptions[5];
 extern Rectangle returnBar;
 extern Rectangle returnButton;
 extern Rectangle randomInsert;
@@ -69,7 +69,13 @@ extern Rectangle pauseButton;
 extern Rectangle slidingButton;
 
 
-extern constexpr int MaxNodes = 257;
+constexpr const Color graphColour[5] = { MAGENTA, MAROON, DARKBLUE, DARKBROWN, DARKGRAY };
+constexpr float minX = 200.0f;
+constexpr float maxX = 1300.0f;
+constexpr float minY = 200.0f;
+constexpr float maxY = 450.0f;
+constexpr float nodeRadius = 25.0f; 
+constexpr float minDistance = 2 * nodeRadius + 10.0f; 
 
 
 //Menu
@@ -87,7 +93,32 @@ void renderMenu(Screen& currentScreen);
 
 void unloadAll();
 
+
+//Vector2 helpers
+Vector2 addVector2(Vector2 a, Vector2 b);
+
+Vector2 subtractVector2(Vector2 a, Vector2 b);
+
+Vector2 multiplyVector2(Vector2 v, float scalar);
+
+Vector2 divideVector2(Vector2 v, float scalar);
+
+float magnitudeVector2(Vector2 v);
+
+Vector2 normalizeVector2(Vector2 v);
+
 Vector2 CalculateCenteredTextPosition(Vector2 texturePos, float textureWidth, float textureHeight, const char* text, int fontSize);
+
+//Button
+bool checkClick(Rectangle& button);
+
+bool checkCollision(Rectangle& button);
+
+void setupButton(Rectangle& button, float x, float y, float wide, float height);
+
+void setupButtonScale(Rectangle& button, float x, float y, float wide, float height);
+
+
 
 //Hash Table
 void renderHashTable(Screen& currentScreen);
@@ -101,16 +132,6 @@ void hashDelete(Interact& state);
 void hashSearch(Interact& state);
 
 void hashCreate(Interact& state);
-
-
-//Button
-bool checkClick(Rectangle& button);
-
-bool checkCollision(Rectangle& button);
-
-void setupButton(Rectangle& button, float x, float y, float wide, float height);
-
-void setupButtonScale(Rectangle& button, float x, float y, float wide, float height);
 
 
 //AVL Tree
@@ -129,6 +150,8 @@ void avlSearch(Interact& state);
 
 void avlCreate(Interact& state);
 
+void avlFile(Interact& state);
+
 
 //234 Tree
 
@@ -145,3 +168,18 @@ void tree234Delete(Interact& state);
 void tree234Search(Interact& state);
 
 void tree234Create(Interact& state);
+
+///Heap
+
+void initializeHeap();
+
+void renderHeap(Screen& currentScreen);
+
+
+//Graph
+
+Vector2 generateRandomPosition();
+
+void initializeGraph();
+
+void renderGraph(Screen& currentScreen);
