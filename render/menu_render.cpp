@@ -30,7 +30,6 @@ void initImages() {
     menuBG = LoadTexture("resources/images/menu_demo.png");
     hashtableBG = LoadTexture("resources/images/hashtable_BG.png");
     avlBG = LoadTexture("resources/images/avl_BG.png");
-
     honeycomb = LoadTexture("resources/images/honeycomb.png");
     honeydrop = LoadTexture("resources/images/honeydrop.png");
     beeImage = LoadTexture("resources/images/flippedBee.png");
@@ -77,6 +76,9 @@ void initAll() {
     initializeHash();
     initializeAVL();
     initialize234Tree();
+    initializeHeap();
+
+    initializeGraph();
 };
 
 void renderMenu(Screen& currentScreen) {
@@ -91,17 +93,6 @@ void renderMenu(Screen& currentScreen) {
     {
         if (checkClick(menuOptions[i])) currentScreen = constants::dataName[i];
     }
-};
-
-Vector2 CalculateCenteredTextPosition(Vector2 texturePos, float textureWidth, float textureHeight, const char* text, int fontSize) {
-    int textWidth = MeasureText(text, fontSize);
-    int textHeight = fontSize; // Height is roughly equal to the font size
-
-    Vector2 centerPos;
-    centerPos.x = texturePos.x + (textureWidth / 2.0f) - (textWidth / 2.0f);
-    centerPos.y = texturePos.y + (textureHeight / 2.0f) - (textHeight / 2.0f);
-
-    return centerPos;
 };
 
 void render(Screen& currentScreen) {
@@ -125,7 +116,7 @@ void render(Screen& currentScreen) {
     } break;
     case MINHEAP:
     {
-        //renderHashTable(currentScreen);
+        renderHeap(currentScreen);
     } break;
     case TRIE:
     {
@@ -133,7 +124,7 @@ void render(Screen& currentScreen) {
     } break;
     case GRAPH:
     {
-        //renderHashTable(currentScreen);
+        renderGraph(currentScreen);
     } break;
     default: break;
     }
