@@ -2,14 +2,14 @@
 #define CONSTANTS_HPP_
 
 typedef enum Screen { MENU, HASHTABLE, AVLTREE, TREE234, MINHEAP, TRIE, GRAPH } Screen;
-typedef enum Interact {REST,CREATE, INSERT, DELETE, SEARCH};
+typedef enum Interact {REST,CREATE, INSERT, DELETE, SEARCH, FILEINTER};
 
 
 namespace constants {
 	constexpr int MAX_DS_COUNT = 6;
 	constexpr int scene_width = 1366;
 	constexpr int scene_height = 768;
-	constexpr int frames_per_second = 30;
+	constexpr int frames_per_second = 60;
 
 	constexpr float optionX = 25.0f;
 	constexpr float optionY = 558.5f;
@@ -41,21 +41,10 @@ namespace constants {
 	constexpr float scaling = 1366.0f / 1920.0f;
 	
 	
-	
-	constexpr int sidebar_width = 256;
-	constexpr int ani_speed = 8;
-
-	constexpr int text_buffer_size = 512;
-
-	constexpr int min_val = 0;
-	constexpr int max_val = 999;
-
-	constexpr int default_font_size = 60;
-	
 	constexpr const Screen dataName[6] = {HASHTABLE, AVLTREE, TREE234, MINHEAP, TRIE, GRAPH};
-	constexpr const Interact hashInter[4] = { CREATE, INSERT, DELETE, SEARCH };
+	constexpr const Interact hashInter[5] = { CREATE, INSERT, DELETE, SEARCH, FILEINTER };
 	
-	constexpr const char* default_color_path = "data/color.bin";
+
 
 }  // namespace constants
 
