@@ -2,7 +2,6 @@
 
 void HoneycombNode::draw() {
     if (value == 0 || pos == -1) return;
-    //std::cout << "Value: " << value << ", Postions: " << position.x << " " << position.y << std::endl;
     //Color gradientStart = ColorAlpha(YELLOW, alpha);
    //Color gradientEnd = ColorAlpha(GOLD, alpha);
     Color outlineColor = ColorAlpha(ORANGE, alpha);
@@ -75,7 +74,6 @@ Tree234::~Tree234() {
 }
 
 void Tree234::insert(int value) {
-    std::cout << "Insert" << value << std::endl;
     if (root == nullptr) {
         copyTree();
         root = new Tree234Node({0, 0}); 
@@ -96,42 +94,24 @@ void Tree234::insertRecursive(Tree234Node* &node, int value) {
     copyTree();
     node->updateVisit();
     copyTree();
-    //std::cout << "Check." << std::endl;
     bool check = false;
     if (node->honeycombs.size() == 3) {
-        //std::cout << "Check prem." << std::endl;
         node->unvisit();
         Tree234Node* parentRoot = node->parent;
-        //std::cout << "Check prem 1." << std::endl;
-
         split(node);
-
-        //std::cout << "Check prem 2." << std::endl;
         copyTree();
         if (parentRoot == NULL) return insertRecursive(root, value);
         else return insertRecursiveAfterSplit(parentRoot, value);
     }
   
-
     // If it's a leaf node (no children), insert the value directly
     if (node->children.empty()) {
-        //std::cout << "Check added." << std::endl;
         HoneycombNode* newComb = new HoneycombNode(value, { 0,0 }, size);
         node->addCombs(newComb);
-        //std::cout << "Check added 1." << std::endl;
-
         nodeList.push_back(newComb);
-        //std::cout << "Check added 2." << std::endl;
-
         size++;
         copyTree();
-        //std::cout << "Check added 3." << std::endl;
-
         node->unvisit();
-
-        //if (node->honeycombs.size() == 3) {
-        //    split(node);
-        //}
         return;
     }
 
@@ -163,23 +143,12 @@ void Tree234::insertRecursiveAfterSplit(Tree234Node*& node, int value) {
 
     // If it's a leaf node (no children), insert the value directly
     if (node->children.empty()) {
-        //std::cout << "Check added." << std::endl;
         HoneycombNode* newComb = new HoneycombNode(value, { 0,0 }, size);
         node->addCombs(newComb);
-        //std::cout << "Check added 1." << std::endl;
-
         nodeList.push_back(newComb);
-        //std::cout << "Check added 2." << std::endl;
-
         size++;
         copyTree();
-        //std::cout << "Check added 3." << std::endl;
-
         node->unvisit();
-
-        //if (node->honeycombs.size() == 3) {
-        //    split(node);
-        //}
         return;
     }
 
@@ -209,7 +178,6 @@ void Tree234::insertRecursiveAfterSplit(Tree234Node*& node, int value) {
 void Tree234::split(Tree234Node* node) {
 
     int midValue = node->honeycombs[1]->value;
-    std::cout << "Check split 1." << std::endl;
 
 
     // Create new parent or move middle value to parent
@@ -227,7 +195,6 @@ void Tree234::split(Tree234Node* node) {
         // Transfer the left and right honeycombs to the new child nodes
         leftChild->addCombs(node->honeycombs[0]);
         rightChild->addCombs(node->honeycombs[2]);
-        std::cout << "Check split 2." << std::endl;
 
         // If the node has children, distribute them between the new child nodes
         if (!node->children.empty()) {
@@ -235,7 +202,6 @@ void Tree234::split(Tree234Node* node) {
             leftChild->children.push_back(node->children[1]);
             rightChild->children.push_back(node->children[2]);
             rightChild->children.push_back(node->children[3]);
-            std::cout << "Check split 3." << std::endl;
 
             for (auto child : leftChild->children) {
                 child->parent = leftChild;
@@ -317,14 +283,12 @@ void Tree234::deleteRecursive(Tree234Node* &node, int value) {
     copyTree();
     // Case 1: The value is found in this node
     if (idx != -1) {
-        std::cout << "Check delete 1a 1. " << value << std::endl;
         if (node->children.empty()) {
             node->honeycombs[idx]->deleting = true;
             copyTree();
             removeKeyFromNode(node, idx);
         }
         else {
-            std::cout << "Check delete 1b 1. " << value << std::endl;
             // Case 1b: Node is an internal node
             // Replace with predecessor (or successor)
             Tree234Node* predNode = getPredecessor(node, idx);
@@ -339,14 +303,12 @@ void Tree234::deleteRecursive(Tree234Node* &node, int value) {
             copyTree();
             target->deleting = false;
             copyTree();
-            std::cout << "Check delete 1b 2." << std::endl;
 
         }
         node->unvisit();
         copyTree();
     }
     else { //Not found in node
-        std::cout << "Check delete 2. " << node->honeycombs[0] ->value << " " << value << std::endl;
         node->unvisit();
         // Case 2: The value is not in this node, proceed with child node
         int childIdx = getChildIndex(node, value);
@@ -356,21 +318,13 @@ void Tree234::deleteRecursive(Tree234Node* &node, int value) {
             // If child node has only one key, we need to fix it before deletion
             childNode->updateVisit();
             copyTree();
-            std::cout << "Check delete 20. " << node->honeycombs[0]->value << " " << value << std::endl;
             fixChild(node, childIdx);
-            std::cout << "Check delete 21.  "  << value << std::endl;
-            std::cout << node->honeycombs.size() << std::endl;
-
             deleteRecursive(node, value);
-            std::cout << "Check delete 22. " << value << std::endl;
-
         }
         else
         {
             deleteRecursive(node->children[childIdx], value);
         } 
-        //std::cout << "Check delete 2. " << node->honeycombs[0]->value << " " << value << std::endl;
-
     }
 }
 
@@ -623,8 +577,6 @@ void Tree234::updateNodePosition(Tree234Node* node, int level, float minX, float
         float offset = 25.0f; // Adjust the offset as needed
         node->honeycombs[0]->position = { node->position.x - offset, node->position.y };
         node->honeycombs[1]->position = { node->position.x + offset, node->position.y };
-        //std::cout << "Value: " << node->honeycombs[0]->value << " " << node->honeycombs[0]->position.x << " " << node->honeycombs[0]->position.y << std::endl;
-        //std::cout << "Value: " << node->honeycombs[1]->value << " " << node->honeycombs[1]->position.x << " " << node->honeycombs[1]->position.y << std::endl;
 
     }
     else if (node->honeycombs.size() == 3) {
@@ -710,45 +662,18 @@ void Tree234::draw() {
     }
 }
 
-
-//void Tree234::treeToArray(Tree234Node* root, std::vector<Tree234Node*>& list) {
-//    if (root == nullptr) return;
-//
-//    // Ensure the list can accommodate the position index
-//    if (root->honeycombs.size() > 0 && root->honeycombs[0].pos >= 0 && root->honeycombs[0].pos < list.size()) {
-//        list[root->honeycombs[0].] = root;
-//    }
-//
-//    // Recursively call for left and right subtrees (in order traversal)
-//    for (Tree234Node* child : root->children) {
-//        treeToArray(child, list);
-//    }
-//}
-
-//void Tree234::copyTree() {
-//    std::vector<Tree234Node*> temp(size);
-//    Tree234Node* step = deepCopy(root);
-//    stepRoots.push_back(step);
-//    treeToArray(step, temp);
-//    steps.push_back(temp);
-//}
-
 void Tree234::copyTree() {
-    std::cout << "Copy check." << std::endl;
     updatePositions();
     updateEdges(root);
 
     copyEdges();
-    std::vector<HoneycombNode*> nodeListCopy;
-    std::cout << std::endl;
 
+    std::vector<HoneycombNode*> nodeListCopy;
     for (HoneycombNode* node : nodeList) {
         HoneycombNode* copyNode = new HoneycombNode(node->value, node->position, node->pos);
         copyNode->alpha = node->alpha;
         copyNode->visit = node->visit;
         copyNode->deleting = node->deleting;
-
-        //std::cout << "Position: " << copyNode->position.x << " " << copyNode->position.y << std::endl;
 
         //copyNode->outlineColor = node->outlineColor;
         //copyNode->fillColor = node->fillColor;
@@ -802,10 +727,11 @@ void Tree234::mixedComb(HoneycombNode* target, HoneycombNode* start, HoneycombNo
 }
 
 void Tree234::updateState(int& stateIndex, float& elapsedTime, float deltaTime, float step) {
-    if (stateIndex < 0 || stateIndex >= steps.size() - 1) return; // Ensure stateIndex is within valid range
+
+    if (steps.size() == 0 || stateIndex < 0 || stateIndex >= steps.size() - 1) return; // Ensure stateIndex is within valid range
 
     elapsedTime += deltaTime;
-    float G = elapsedTime / step;  // Assuming transition over 1 second
+    float G = elapsedTime / step; 
     if (G > step) G = step;
 
     const std::vector<HoneycombNode*>& startCombList = steps[stateIndex];
@@ -924,18 +850,9 @@ int Tree234::getStepsSize() {
 Tree234 testTree;
 
 void initialize234Tree() {
-   // HoneycombNode tests(10, { 200,200 });
     for (int i = 1; i <= 10; i++) {
          testTree.insert(i);
     }
-    
-    testTree.search(10);
-    testTree.updatePositions();
-    testTree.deleteValue(7);
-    testTree.deleteValue(2);
-    //testTree.deleteValue(4);
-    testTree.debug();
-    
 }
 
 Interact tree234curInteract = REST;
