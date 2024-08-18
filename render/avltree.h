@@ -25,7 +25,6 @@ struct avlNode
 
 
 	void draw();
-	void fadein(float deltatime);
 };
 
 
@@ -74,7 +73,6 @@ public:
 	
 	void treeToArray(avlNode* root, std::vector<avlNode*> & list);
 
-	void update();
 	void printInOrder(avlNode* node);
 	void updateEdges();
 	void avlTree::updateEdgesFromNode(avlNode* node);
@@ -90,7 +88,7 @@ public:
 	void finalDelete(int value, int& stateIndex,bool& pause);
 	void finalInsert(int value, int& stateIndex,bool& pause);
 	void finalCreate(int value, int& stateIndex,bool& pause);
-		
+	void finalFile(std::vector<int>& input, int& stateIndex, bool& pause);
 	bool isInteracting(int t);
 	avlNode* searchRecursive(avlNode* node, int value);
 	bool search(int value, int& stateIndex, bool& pause);
