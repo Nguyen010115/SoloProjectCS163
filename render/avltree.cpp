@@ -1,23 +1,6 @@
 #include "avltree.h"
 
 //Node constructing
-
-
-
-//Line constructring
-// edge constructor
-edge::edge(int st, int en) : startIndex(st), endIndex(en) {}
-
-// edge draw method
-void edge::draw(const avlNode* startNode, const avlNode* endNode) {
-    if (!startNode || !endNode) return;
-    Color color = ColorAlpha(BLACK, alpha);
-    if (startNode->value != 0 && endNode->value != 0) DrawLineEx(startNode->position, endNode->position, 3.0f, color);
-}
-
-
-
-//AVL Class constructing
 void avlNode::draw() {
     // Determine the color with fading effect using the alpha value
     Color gradientStart = ColorAlpha(YELLOW, alpha);
@@ -40,7 +23,7 @@ void avlNode::draw() {
 
     DrawCircleV(position, radius, outlineColor);
 
-    DrawCircleGradient(position.x, position.y,  radius - 5.0f, WHITE, gradientEnd);
+    DrawCircleGradient(position.x, position.y, radius - 5.0f, WHITE, gradientEnd);
     // Draw ring outline
 
     // Calculate positions for the value and balance text
@@ -57,24 +40,30 @@ void avlNode::draw() {
     std::string balanceStr = std::to_string(balance);
     Vector2 balancePos = { position.x - MeasureText(balanceStr.c_str(), balanceFontSize) / 2,
                           position.y - radius
-        - balanceFontSize};
+        - balanceFontSize };
     DrawText(balanceStr.c_str(), balancePos.x, balancePos.y, balanceFontSize, textColor);
 }
 
-void avlNode::fadein(float deltaTime)
-{
-        // Decrease alpha over time, clamping it between 0.0 and 1.0
-        alpha += 0.5f * deltaTime;
-        if (alpha > 1.0f) alpha = 1.0f;
+
+//Line constructring
+// edge constructor
+edge::edge(int st, int en) : startIndex(st), endIndex(en) {}
+
+// edge draw method
+void edge::draw(const avlNode* startNode, const avlNode* endNode) {
+    if (!startNode || !endNode) return;
+    Color color = ColorAlpha(BLACK, alpha);
+    if (startNode->value != 0 && endNode->value != 0) DrawLineEx(startNode->position, endNode->position, 3.0f, color);
 }
 
 
+
+//AVL Class constructing
 void avlTree::insert(int value) {
     bool inserted = false;
     root = insertRecursive(root, value, inserted);
     updatePositions();
     updateEdges();
-    //std::cout << std::endl << "Insert1";
     copyTree();
 }
 
@@ -89,13 +78,11 @@ avlNode* avlTree::insertRecursive(avlNode* &node, int value, bool &inserted) {
             root = temp;
             updatePositions();
             updateEdges();
-            std::cout << std::endl << "InsertF";
             copyTree();
         }
         else {
             updatePositions();
             updateEdges();
-            std::cout << std::endl << "InsertF";
             copyTree();
         }
         return temp;
@@ -322,7 +309,6 @@ void avlTree::treeToArray(avlNode* root, std::vector<avlNode*>& list){
 }
 
 void avlTree::copyTree() {
-    std::cout << pos_steps++ << std::endl;
     std::vector<avlNode*> temp(size);
     avlNode* step = deepCopy(root);
 
@@ -334,42 +320,15 @@ void avlTree::copyTree() {
 }
 
 
-void avlTree::update() {
-    int n = 0;
-    int ne = 0;
-    for (auto& step : steps) {
-        std::cout << n++ << std::endl;
-        for (auto& node : step) {
-            if (node) std::cout << "Value: " << node->value << ", Pos: " << node->pos
-                << ", Height: " << node->height << ", Balance: " << node->balance
-                << ", Visiting: " << (node->visiting ? "True" : "False") << ", BalanceVisiting: " << (node->balanceVisit ? "True" : "False") << " PositionXY:" << node->position.x << " " << node->position.y << std::endl;
-            else std::cout << "NULL" << std::endl;
-        }
-        std::cout << std::endl;
-
-    }
-    for (auto& edge : stepEdges) {
-        std::cout << ne++ << std::endl;
-        for (auto& e : edge) {
-            std::cout << "Start: " << e.startIndex << ", End: " << e.endIndex << std::endl;
-        }
-        std::cout << std::endl;
-
-    }
-}
-
 void avlTree::printInOrder(avlNode* node) {
     if (node == nullptr) return;
 
-    // Recursively print the left subtree
     printInOrder(node->left);
 
-    // Print the current node's value and other details
     std::cout << "Value: " << node->value << ", Pos: " << node->pos
         << ", Height: " << node->height << ", Balance: " << node->balance
         << ", Visiting: " << (node->visiting ? "True" : "False") << ", BalanceVisiting: " << (node->balanceVisit ? "True" : "False") << " PositionXY:" << node->position.x << " " << node->position.y << std::endl;
 
-    // Recursively print the right subtree
     printInOrder(node->right);
 }
 
@@ -377,8 +336,7 @@ void avlTree::updateState(int& stateIndex, float& elapsedTime, float deltaTime) 
     if (stateIndex < 0 || stateIndex >= steps.size() - 1) return;
 
     float G = elapsedTime / deltaTime;
-    if (G > deltaTime) G = deltaTime;  // Clamp G to be within [0, 1]
-    /*std::cout << "G: " << G << std::endl;*/
+    if (G > deltaTime) G = deltaTime; 
 
     std::vector<avlNode*>& currentStep = steps[stateIndex];
     std::vector<avlNode*>& nextStep = steps[stateIndex + 1];
@@ -398,13 +356,7 @@ void avlTree::updateState(int& stateIndex, float& elapsedTime, float deltaTime) 
         if (i < curList.size()) curList[i] = mixedNode;
         else curList.push_back(mixedNode);
     }
-    /*std::cout << std::endl;
-    std::cout << stateIndex << " " << steps.size() - 1 << std::endl;*/
-  /* for (avlNode* node : curList) {
-        std::cout << "Value: " << node->value << ", Pos: " << node->pos
-            << ", Height: " << node->height << ", Balance: " << node->balance
-            << ", Visiting: " << (node->visiting ? "True" : "False") << ", BalanceVisiting: " << (node->balanceVisit ? "True" : "False") << " PositionXY:" << node->position.x << " " << node->position.y << ", SearchVisiting: " << (node->searchVisit ? "True" : "False") << std::endl;
-    }*/
+
 
     size_t maxEdgeSize = std::max(currentEdges.size(), nextEdges.size());
     for (size_t i = 0; i < maxEdgeSize; ++i) {
@@ -417,14 +369,9 @@ void avlTree::updateState(int& stateIndex, float& elapsedTime, float deltaTime) 
             curEdge.push_back(mixedEdge);
         }
     }
-    /*for (edge e : curEdge) {
-        std::cout << "Start: " << e.startIndex << ", End: " << e.endIndex << std::endl;
-    }
-    std::cout << std::endl;*/
 }
 
 void avlTree::updateTree(float deltaTime, float &elapsedTime, int& stateIndex) {
-    //std::cout << elapsedTime << std::endl;
     elapsedTime += deltaTime;
 
     if (elapsedTime >= 1.0f) {
@@ -433,7 +380,6 @@ void avlTree::updateTree(float deltaTime, float &elapsedTime, int& stateIndex) {
         if (stateIndex >= steps.size() - 1) {
             stateIndex = steps.size() - 1;
         }
-        //std::cout << stateIndex << std::endl;
     }
 
     if (steps.size() > 0) updateState(stateIndex, elapsedTime, 1.0f);
@@ -473,7 +419,6 @@ avlNode* avlTree::deleteRecursive(avlNode* node, int value) {
 
     node->alphavisiting = 1.0f;
     node->visiting = true;
-    std::cout << "Delete Check." << std::endl;
     //printInOrder(root);
     updatePositions();
     updateEdges();
@@ -483,7 +428,6 @@ avlNode* avlTree::deleteRecursive(avlNode* node, int value) {
     if (value < node->value) {
         node->alphavisiting = 0.0f;
         node->visiting = false;
-        std::cout << "Delete Check Left" << std::endl;
         //printInOrder(root);
         //copyTree();
         node->left = deleteRecursive(node->left, value);
@@ -491,7 +435,6 @@ avlNode* avlTree::deleteRecursive(avlNode* node, int value) {
     else if (value > node->value) {
         node->alphavisiting = 0.0f;
         node->visiting = false;
-        std::cout << "Delete Check Right." << std::endl;
         //printInOrder(root);
         //copyTree();
         node->right = deleteRecursive(node->right, value);
@@ -534,7 +477,6 @@ void avlTree::remove(int value) {
     updateEdges();
     copyTree();
     root = deleteRecursive(root, value);
-    std::cout << "Deleting completed" << std::endl;
     if (root != nullptr) {
         updatePositions();
         updateEdges();
@@ -603,6 +545,8 @@ void avlTree::mixNodes(avlNode* target, avlNode* start, avlNode* end, float mixC
 }
 
 void avlTree::finalDelete(int value, int& stateIndex, bool& pause) {
+    pause = true;
+
     steps.clear();
     stepEdges.clear();
     copyTree();
@@ -613,6 +557,8 @@ void avlTree::finalDelete(int value, int& stateIndex, bool& pause) {
 }
 
 void avlTree::finalInsert(int value, int& stateIndex, bool& pause) {
+    pause = true;
+
     steps.clear();
     stepEdges.clear();
     copyTree();
@@ -623,6 +569,8 @@ void avlTree::finalInsert(int value, int& stateIndex, bool& pause) {
 }
 
 void avlTree::finalCreate(int value, int& stateIndex, bool& pause) {
+    pause = true;
+
     clearTree();
     root = nullptr;
     stateIndex = 0;
@@ -635,12 +583,25 @@ void avlTree::finalCreate(int value, int& stateIndex, bool& pause) {
 
 }
 
+void avlTree::finalFile(std::vector<int>& input, int& stateIndex, bool& pause) {
+    pause = true;
+
+    clearTree();
+    root = nullptr;
+    stateIndex = 0;
+    for (auto i : input) insert(i);
+    pause = false;
+}
+
+
 bool avlTree::isInteracting(int state) {
     if (steps.size() == 0) return false;
     return (state < steps.size() - 1);
 }
 
 bool avlTree::search(int value, int& stateIndex, bool& pause) {
+    pause = true;
+
     steps.clear();
     stepEdges.clear();
     copyTree();
@@ -713,24 +674,8 @@ int avlTree::getStepsSize() {
     return steps.size();
 }
 
-/////////////////////////////////////////////////////////////////////////////
 
-//Rectangle hashtableOptions[4];
-//Rectangle returnBar;
-//Rectangle returnButton;
-//Rectangle randomInsert;
-//Rectangle inputSection;
-//Rectangle okInput;
-//
-//Rectangle deleteSectionBox;
-//Rectangle okDelete;
-//
-//Rectangle searchSectionBox;
-//Rectangle okSearch;
-//
-//Rectangle sizeSectionBox;
-//Rectangle randomSectionBox;
-//Rectangle okRandom;
+
 
 char AVLinputNumber[4] = "\0";
 int AVLnumCount = 0;
@@ -750,17 +695,10 @@ float AVLtimePassed = 0.0f;
 
 
 void initializeAVL() {
-    //avl.insert(1);
-    //avl.insert(2);
-    //avl.insert(5);
-   //avl.insert(4);
-    //avl.insert(3);
-    //avl.updatePositions();
-    //avl.update();
-    //avl.insert(10);
-    //avl.insert(56);
-    //avl.insert(100);
-    
+    avl.insert(1);
+    avl.insert(2);
+    avl.insert(3);
+    avl.insert(4);
 }
 
 float deltaTime = 0.0f;
@@ -768,6 +706,8 @@ float elapsedTime = 0.0f;
 int stateIndex = 0;
 bool pause = false;
 bool isDragging = false;
+bool getFile = false;
+
 
 
 void renderAVLtree(Screen& currentScreen) {
@@ -783,9 +723,7 @@ void renderAVLtree(Screen& currentScreen) {
     }
 
     if (checkCollision(pauseButton)) DrawRectangleRec(pauseButton, Color{ 0, 255, 0, 32 });
-    //if (checkCollision(forWard)) DrawRectangleRec(forWard, Color{ 0, 255, 0, 32 });
-    //if (checkCollision(backWard)) DrawRectangleRec(backWard, Color{ 0, 255, 0, 32 });
-
+   
     if (checkClick(backWard)) {
         pause = true;
         if (stateIndex > 0) {
@@ -807,9 +745,8 @@ void renderAVLtree(Screen& currentScreen) {
 
     if (!pause) avl.updateTree(deltaTime, elapsedTime, stateIndex);
 
-    // Detect if the mouse is clicking on the slidingButton
     if (checkClick(slidingButton)) {
-        isDragging = true;  // Start dragging when the button is clicked
+        isDragging = true; 
     }
 
     // If the mouse button is released, stop dragging
@@ -853,18 +790,19 @@ void renderAVLtree(Screen& currentScreen) {
 
     avl.draw();
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
     }
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
     if (checkClick(returnBar) || checkClick(returnButton)) currentScreen = MENU;
 
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         if (checkClick(hashtableOptions[i])) {
             if (!avlinteracting) {
                 avlcurInteract = constants::hashInter[i];
                 avlinteracting = true;
+                getFile = false;
             }
             else {
                 avlinteracting = false;
@@ -894,12 +832,22 @@ void avlInteracting(Interact& state) {
     {
         avlSearch(state);
     } break;
-
+    case FILEINTER:
+    {
+        avlFile(state);
+    }
     default: break;
     }
 };
 
-
+void avlFile(Interact& state) {
+    if (!getFile) {
+        std::string selectedFilePath = FileSelectDialog();
+        std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
+        avl.finalFile(numbers, stateIndex, pause);
+        getFile = true;
+    }
+}
 
 void avlInsert(Interact& state) {
     DrawTexture(insertSection, hashtableOptions[1].x + 90.0f, hashtableOptions[1].y, WHITE);
@@ -1163,9 +1111,9 @@ void avlCreate(Interact& state) {
     if (AVLnumCount > 0) {
         int inputValue = std::stoi(AVLinputNumber);  // Convert the string to an integer
 
-        if (inputValue > 30) {
+        if (inputValue > 50) {
             // Reset the input to "30"
-            AVLinputNumber[0] = '3';
+            AVLinputNumber[0] = '5';
             AVLinputNumber[1] = '0';
             AVLinputNumber[2] = '\0';
             AVLnumCount = 2;  // Update the count to reflect the new length of the input
@@ -1186,7 +1134,7 @@ void avlCreate(Interact& state) {
  
 
     if (checkClick(randomCreate) && !avl.isInteracting(stateIndex)) {
-        int number = rand()%31;
+        int number = rand()%51;
         if (number == 0) number++;
         std::string str = std::to_string(number);
         for (int i = 0; i < str.size(); i++) {
