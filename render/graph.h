@@ -30,7 +30,7 @@ struct GraphEdge
 	GraphEdge(int s, int e, int w, int c):
 		startIndex(s), endIndex(e), weight(w), colour(c){}
 
-	void draw(std::vector<GraphNode*> v);
+	void draw(std::vector<GraphNode*>& v);
 };
 
 

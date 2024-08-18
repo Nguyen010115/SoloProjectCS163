@@ -11,10 +11,9 @@ void GraphNode::draw() {
 
     if (colour > 0 && colour < 16) {
         Color temp = graphColour[colour];
-        int index = colour / 5;
-        float alphaSemi = 0.3f * static_cast<float>(index);
-        gradientEnd = ColorAlpha(temp, alphaSemi);
-        outlineColor = ColorAlpha(temp, alphaSemi);
+
+        gradientEnd = ColorAlpha(temp, alpha);
+        //outlineColor = ColorAlpha(temp, alpha);
     }
 
     DrawCircleV(position, radius, outlineColor);
@@ -39,7 +38,7 @@ void GraphNode::draw() {
     DrawText(balanceStr.c_str(), balancePos.x, balancePos.y, balanceFontSize, textColor);
 }
 
-void GraphEdge::draw(std::vector<GraphNode*> nodeList) {
+void GraphEdge::draw(std::vector<GraphNode*>& nodeList) {
     Vector2 start = nodeList[startIndex]->position;
     Vector2 end = nodeList[endIndex]->position;
     if (start.x == 0 || end.x == 0) return;
@@ -52,7 +51,7 @@ void GraphEdge::draw(std::vector<GraphNode*> nodeList) {
         edgeColor = ColorAlpha(temp, alpha * alphaSemi);
     }*/
 
-    DrawLineEx(start, end, 3.0f, edgeColor);
+    DrawLineEx(start, end, 2.0f, edgeColor);
 
     // Draw weight of the edge in the middle of the edge line
     Vector2 midPoint = { (start.x + end.x) / 2, (start.y + end.y) / 2 };
@@ -108,14 +107,19 @@ bool Graph::doesOverlap(const Vector2& pos, const std::vector<GraphNode*>& nodeL
 
 void Graph::addEdge(int u, int v, int weight) {
 	if (u >= V || v >= V) return;
+
 	Mat[u][v] = weight;
 
 	Mat[v][u] = weight;
+
+    //std::cout << "Add edge: " << Mat[u][v] << std::endl;
+
 }
 
 void Graph::dfs(int u, int componentIndex, std::vector<bool>& visited) {
     visited[u] = true;
     nodeList[u]->colour = componentIndex;
+    copyList();
 
     for (int v = 0; v < V; ++v) {
         if (Mat[u][v] > 0 && !visited[v]) {
@@ -127,6 +131,7 @@ void Graph::dfs(int u, int componentIndex, std::vector<bool>& visited) {
 }
 
 int Graph::connectedComp() {
+    copyList();
     std::vector<bool> visited(V, false);
     int componentIndex = 0;
 
@@ -137,31 +142,36 @@ int Graph::connectedComp() {
         }
     }
 
-    return componentIndex; // Returns the number of connected components
+    return componentIndex; 
 }
 
 void Graph::updateEdges() {
-    edgeList.clear(); // Clear existing edges
+    edgeList.clear(); 
     for (int u = 0; u < V; ++u) {
-        for (int v = u + 1; v < V; ++v) { // Avoid duplicating edges
+        for (int v = u + 1; v < V; ++v) {
             if (Mat[u][v] > 0) {
                 GraphEdge* edge = new GraphEdge(u, v, Mat[u][v], ColourMat[u][v]);
                 edgeList.push_back(edge);
             }
         }
     }
+    //std::cout << "Update edges: " << edgeList.size() << std::endl;
+
 }
 
 
 void Graph::copyList() {
 
-    updateEdges();
 
     curList.clear();
     curEdge.clear();
 
+    updateEdges();
+
+
+
     // Copy nodes
-    for (auto node : nodeList) {
+    for (auto& node : nodeList) {
         GraphNode* newNode = new GraphNode(node->ind, node->value, node->position);
         newNode->colour = node->colour;
         newNode->visiting = node->visiting;
@@ -171,8 +181,11 @@ void Graph::copyList() {
     }
 
     // Copy edges
-    for (auto edge : edgeList) {
+    std::cout << "Edge size: " << edgeList.size() << std::endl;
+
+    for (auto& edge : edgeList) {
         GraphEdge* newEdge = new GraphEdge(edge->startIndex, edge->endIndex, edge->weight, edge->colour);
+        std::cout << edge->startIndex << " " << edge->endIndex << std::endl;
         newEdge->colour = edge->colour;
         curEdge.push_back(newEdge);
     }
@@ -241,6 +254,7 @@ void Graph::updateState(float deltaTime, float& elapsedTime, int& stateIndex, fl
 
 
 void Graph::draw() {
+  
     // Draw edges first so they appear below the nodes
     for (const auto& edge : curEdge) {
         edge->draw(curList);
@@ -250,6 +264,7 @@ void Graph::draw() {
     for (const auto& node : curList) {
         node->draw();
     }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -259,19 +274,19 @@ Graph graph;
 void initializeGraph() {
     for (int i = 0; i < 7; i++) graph.addNode();
     std::cout << "Check 1." << std::endl;
-    graph.addEdge(0, 1, 0);
-    graph.addEdge(1, 2, 0);
-    graph.addEdge(2, 0, 0);
+    graph.addEdge(0, 1, 1);
+    graph.addEdge(1, 2, 1);
+    graph.addEdge(2, 0, 1);
 
     // Component 2: Nodes 3, 4
-    graph.addEdge(3, 4, 0);
+    graph.addEdge(3, 4, 1);
 
     // Component 3: Nodes 5, 6
-    graph.addEdge(5, 6, 0);
+    graph.addEdge(5, 6, 1);
 
     // Additional edges to complete the 3 connected components
-    graph.addEdge(0, 2, 0); // Another connection in Component 1
-    graph.addEdge(3, 3, 0); // Self-loop in Component 2 for variety
+    graph.addEdge(0, 2, 1); // Another connection in Component 1
+    graph.addEdge(3, 3, 1); // Self-loop in Component 2 for variety
 
     // Now, you have 3 connected components: {0,1,2}, {3,4}, {5,6}
     std::cout << "Check 2." << std::endl;
