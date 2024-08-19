@@ -64,11 +64,16 @@ void MinHeap::bubbleUp(int index) {
         int parentIndex = (index - 1) / 2;
         if (heapArray[index]->value < heapArray[parentIndex]->value) {
             copyHeap();
+            heapArray[index]->visiting = true;
+            heapArray[parentIndex]->visiting = true;
             std::swap(heapArray[index], heapArray[parentIndex]);
 
 
-            index = parentIndex;
             copyHeap2();
+            heapArray[index]->visiting = false;
+            heapArray[parentIndex]->visiting = false;
+            index = parentIndex;
+
         }
         else {
             break;

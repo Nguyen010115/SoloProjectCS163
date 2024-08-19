@@ -52,6 +52,8 @@ public:
 	void updateState(float deltaTime, float& elapsedTime, int& stateIndex, float step);
 	int getStepsSize();
 
+	void Graph::applyForceDirectedLayout(int iterations = 100, float areaWidth = 1400, float areaHeight = 600);
+
 
 private:
 	int V = 0;

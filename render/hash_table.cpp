@@ -356,7 +356,7 @@ void HashTable::goUp() {
 
 ///////////////////////////////////////////////////////////////////////
 
-Rectangle hashtableOptions[4];
+Rectangle hashtableOptions[5];
 Rectangle returnBar;
 Rectangle returnButton;
 Rectangle randomInsert;
@@ -406,6 +406,8 @@ void initializeHash() {
     {
         setupButton(hashtableOptions[i], constants::optionX, constants::optionY + i * constants::optionHeight + i * constants::optionOffsetY, constants::optionWidth, constants::optionHeight);
     }
+    setupButton(hashtableOptions[4], constants::optionX, constants::optionY - constants::optionHeight - constants::optionOffsetY, constants::optionWidth, constants::optionHeight);
+
     setupButton(returnBar, constants::returnBarX, constants::returnBarY, constants::returnBarWidth, constants::returnBarHeight);
     setupButton(returnButton, constants::returnButtonX, constants::returnButtonY, constants::returnButtonWidth, constants::returnButtonHeight);
     setupButton(randomInsert,241, 613 , 28.0f, 28.0f);
@@ -562,6 +564,8 @@ void hashInsert(Interact& state) {
         int s = rand() % 100;
         hashTable.insert(s);
     }
+
+    
 
 
 };

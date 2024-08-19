@@ -11,7 +11,7 @@ void GraphNode::draw() {
 
     if (colour > 0 && colour < 16) {
         Color temp = graphColour[colour];
-
+        outlineColor = ColorAlpha(temp, alpha);
         gradientEnd = ColorAlpha(temp, alpha);
         //outlineColor = ColorAlpha(temp, alpha);
     }
@@ -44,12 +44,11 @@ void GraphEdge::draw(std::vector<GraphNode*>& nodeList) {
     if (start.x == 0 || end.x == 0) return;
     Color edgeColor = BLACK;
 
-    /*if (colour > 0 && colour < 16) {
+    if (colour > 0 && colour < 16) {
         Color temp = graphColour[colour];
-        int index = colour / 5;
-        float alphaSemi = 0.3f * static_cast<float>(index);
-        edgeColor = ColorAlpha(temp, alpha * alphaSemi);
-    }*/
+
+        edgeColor = ColorAlpha(temp, alpha);
+    }
 
     DrawLineEx(start, end, 2.0f, edgeColor);
 
@@ -267,6 +266,56 @@ void Graph::draw() {
 
 }
 
+void Graph::applyForceDirectedLayout(int iterations, float areaWidth, float areaHeight ) {
+    copyList();
+    float k = std::sqrt((areaWidth * areaHeight) / V);  // Optimal distance between nodes
+    float repulsiveForceMultiplier = 0.1f;
+    float attractiveForceMultiplier = 0.1f;
+    float maxDisplacement = 50.0f;
+
+    for (int iter = 0; iter < iterations; iter++) {
+        std::vector<Vector2> displacement(V, Vector2{ 0.0f, 0.0f });
+
+        // Repulsive forces between all pairs of nodes
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (i != j) {
+                    Vector2 delta = subtractVector2(nodeList[i]->position, nodeList[j]->position);
+                    float distance = magnitudeVector2(delta);
+                    if (distance > 0) {
+                        Vector2 repulsiveForce = multiplyVector2(normalizeVector2(delta), (k * k / distance));
+                        displacement[i] = addVector2(displacement[i], multiplyVector2(repulsiveForce, repulsiveForceMultiplier));
+                    }
+                }
+            }
+        }
+
+        // Attractive forces between connected nodes
+        for (const auto& edge : edgeList) {
+            Vector2 delta = subtractVector2(nodeList[edge->startIndex]->position, nodeList[edge->endIndex]->position);
+            float distance = magnitudeVector2(delta);
+            Vector2 attractiveForce = multiplyVector2(normalizeVector2(delta), (distance * distance / k));
+            displacement[edge->startIndex] = subtractVector2(displacement[edge->startIndex], multiplyVector2(attractiveForce, attractiveForceMultiplier));
+            displacement[edge->endIndex] = addVector2(displacement[edge->endIndex], multiplyVector2(attractiveForce, attractiveForceMultiplier));
+        }
+
+        // Apply displacement to node positions
+        for (int i = 0; i < V; i++) {
+            float displacementLength = magnitudeVector2(displacement[i]);
+            if (displacementLength > 0) {
+                nodeList[i]->position = addVector2(nodeList[i]->position, multiplyVector2(normalizeVector2(displacement[i]), std::min(displacementLength, maxDisplacement)));
+
+                // Ensure nodes stay within the defined area
+                nodeList[i]->position.x = std::min(areaWidth - nodeRadius, std::max(nodeRadius, nodeList[i]->position.x));
+                nodeList[i]->position.y = std::min(areaHeight - nodeRadius, std::max(nodeRadius, nodeList[i]->position.y));
+            }
+        }
+    }
+
+    // After the layout is applied, update the edges to reflect new node positions
+    copyList();
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 Graph graph;
@@ -290,11 +339,11 @@ void initializeGraph() {
 
     // Now, you have 3 connected components: {0,1,2}, {3,4}, {5,6}
     std::cout << "Check 2." << std::endl;
+    for (int i = 0; i < 4; i++) graph.addNode();
 
-    graph.updateEdges();  // Ensure edges are updated
 
     std::cout << "Check 3." << std::endl;
-
+    //graph.applyForceDirectedLayout();
     graph.connectedComp();  // Find and color the connected components
     graph.copyList();
 }

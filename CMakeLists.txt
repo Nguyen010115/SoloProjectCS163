@@ -24,7 +24,7 @@ add_subdirectory(raylib)
 add_executable(${PROJECT_NAME}
     src/main.cpp
     render/menu_render.cpp
-"nfd/nfd_win.cpp" "nfd/nfd_common.c" "render/hash_table.cpp" "render/button.cpp" "render/hash_table.h" "render/animation.h"  "render/bee.cpp" "render/bee.h" "render/avltree.cpp" "render/avltree.h" "render/234Tree.h" "render/234Tree.cpp" "render/minheap.cpp" "render/minheap.h" "nfd/file_select.h" "nfd/file_select.cpp" "render/graph.h" "render/graph.cpp" )
+"nfd/nfd_win.cpp" "nfd/nfd_common.c" "render/hash_table.cpp" "render/button.cpp" "render/hash_table.h" "render/animation.h"  "render/bee.cpp" "render/bee.h" "render/avltree.cpp" "render/avltree.h" "render/234Tree.h" "render/234Tree.cpp" "render/minheap.cpp" "render/minheap.h" "nfd/file_select.h" "nfd/file_select.cpp" "render/graph.h" "render/graph.cpp"  "render/vector2D_helper.cpp" "render/trie.h" "render/trie.cpp")
 
 target_link_libraries(${PROJECT_NAME} raylib)
 
