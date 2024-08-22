@@ -35,8 +35,55 @@ void Trie::insert(const std::string& word) {
     for (char ch : word) {
         if (current->children.find(ch) == current->children.end()) {
             current->children[ch] = new TrieNode({0,0}, ch);
+            size++;
         }
         current = current->children[ch];
     }
     current->isEndOfWord = true;
+}
+
+void Trie::updatePositions() {
+    if (size == 0) return; // If the tree is empty, do nothing
+
+    // Initial settings: root node is centered at the top
+    float initialX = constants::scene_width; // X position
+    float levelSpacing = 50.0f;      // Vertical distance between levels
+    updateNodePosition(root, 0, 0, initialX, levelSpacing);
+}
+
+void Trie::updateNodePosition(TrieNode* root, int level, float minX, float maxX, float levelSpacing) {
+    if (root == NULL) return;
+
+    // Set the position of the current node
+    root->position.x = (minX + maxX) / 2;
+    root->position.y = 120.0f + level * levelSpacing;
+
+    // Recursively set positions for left and right children
+    // Number of children
+    int numChildren = root->children.size();
+    if (numChildren == 0) return;  // If no children, no need to continue
+
+    // Calculate the width for each child
+    float rangePerChild = (maxX - minX) / numChildren;
+
+    int childIndex = 0;
+    for (auto& pair : root->children) {
+        float childMinX = minX + childIndex * rangePerChild;
+        float childMaxX = childMinX + rangePerChild;
+
+        // Recursively set positions for each child node
+        updateNodePosition(pair.second, level + 1, childMinX, childMaxX, levelSpacing);
+        childIndex++;
+    }
+}
+
+int Trie::countLeaves(TrieNode* node) {
+    if (node == nullptr) return 0;
+    if (node->children.empty()) return 1; 
+
+    int leafCount = 0;
+    for (auto& pair : node->children) {
+        leafCount += countLeaves(pair.second);
+    }
+    return leafCount;
 }

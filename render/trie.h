@@ -23,12 +23,15 @@ public:
     void insert(const std::string& word);
     bool search(const std::string& word) const;
     bool remove(const std::string& word);
+    void updatePositions();
+    void updateNodePosition(TrieNode* root, int level, float minX, float maxX, float levelSpacing);
+    int countLeaves(TrieNode* node);
 
     void visualize();  // Optional: Method to visualize the Trie
 
 private:
     TrieNode* root;
-
+    int size = 0;
     bool removeHelper(TrieNode* node, const std::string& word, int depth);
     void deleteNode(TrieNode* node);
 };
