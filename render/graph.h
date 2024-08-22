@@ -53,7 +53,8 @@ public:
 	int getStepsSize();
 
 	void Graph::applyForceDirectedLayout(int iterations = 100, float areaWidth = 1400, float areaHeight = 600);
-
+	void dfsConnected(std::vector<bool>& visited, int u);
+	bool isConnected();
 
 private:
 	int V = 0;

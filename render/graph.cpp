@@ -129,6 +129,32 @@ void Graph::dfs(int u, int componentIndex, std::vector<bool>& visited) {
     }
 }
 
+void Graph::dfsConnected(std::vector<bool>& visited, int u) {
+    visited[u] = true;
+    for (int i = 0; i < V; i++) {
+        if (Mat[u][i] && !visited[i]) {
+            dfsConnected( visited, i);
+        }
+    }
+}
+
+bool Graph::isConnected() {
+    std::vector<bool> visited;
+    for (int i = 0; i < V; i++) {
+        visited[i] = false;
+    }
+
+    dfsConnected(visited, 0);
+
+    for (int i = 0; i < V; i++) {
+        if (visited[i] == false) {
+            return false; 
+        }
+    }
+    return true;
+
+}
+
 int Graph::connectedComp() {
     copyList();
     std::vector<bool> visited(V, false);
@@ -143,6 +169,8 @@ int Graph::connectedComp() {
 
     return componentIndex; 
 }
+
+
 
 void Graph::updateEdges() {
     edgeList.clear(); 
@@ -315,6 +343,8 @@ void Graph::applyForceDirectedLayout(int iterations, float areaWidth, float area
     // After the layout is applied, update the edges to reflect new node positions
     copyList();
 }
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 
