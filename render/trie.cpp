@@ -130,3 +130,21 @@ bool Trie::remove(const std::string& word) {
 
     return removeHelper(root, word, 0);
 }
+
+
+bool Trie::search(const std::string& word) const {
+    TrieNode* current = root;
+
+    for (char ch : word) {
+        // Check if the current character exists in the current node's children
+        if (current->children.find(ch) == current->children.end()) {
+            return false;  // The character was not found, so the word is not in the trie
+        }
+
+        // Move to the child node corresponding to the current character
+        current = current->children[ch];
+    }
+
+    // After traversing the word, check if we're at the end of a valid word
+    return current->isEndOfWord;
+}
