@@ -34,7 +34,7 @@ private:
 };
 
 Trie::Trie() {
-    root = new TrieNode();
+    root = new TrieNode({0,0}, '1');
 }
 
 Trie::~Trie() {

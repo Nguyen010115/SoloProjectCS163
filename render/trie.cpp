@@ -24,6 +24,7 @@ void TrieNode::draw() {
 
     // Draw value text at the center of the node
     std::string valueStr = std::to_string(ch);
+    if (ch == '1') valueStr = 'root';
     Vector2 valuePos = { position.x - MeasureText(valueStr.c_str(), valueFontSize) / 2,
                          position.y - valueFontSize / 2 };
     DrawText(valueStr.c_str(), valuePos.x, valuePos.y, valueFontSize, textColor);
@@ -33,7 +34,7 @@ void Trie::insert(const std::string& word) {
     TrieNode* current = root;
     for (char ch : word) {
         if (current->children.find(ch) == current->children.end()) {
-            current->children[ch] = new TrieNode();
+            current->children[ch] = new TrieNode({0,0}, ch);
         }
         current = current->children[ch];
     }

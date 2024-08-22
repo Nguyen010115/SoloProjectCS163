@@ -180,11 +180,11 @@ void Graph::copyList() {
     }
 
     // Copy edges
-    std::cout << "Edge size: " << edgeList.size() << std::endl;
+    //std::cout << "Edge size: " << edgeList.size() << std::endl;
 
     for (auto& edge : edgeList) {
         GraphEdge* newEdge = new GraphEdge(edge->startIndex, edge->endIndex, edge->weight, edge->colour);
-        std::cout << edge->startIndex << " " << edge->endIndex << std::endl;
+        //std::cout << edge->startIndex << " " << edge->endIndex << std::endl;
         newEdge->colour = edge->colour;
         curEdge.push_back(newEdge);
     }
@@ -270,7 +270,7 @@ void Graph::applyForceDirectedLayout(int iterations, float areaWidth, float area
     copyList();
     float k = std::sqrt((areaWidth * areaHeight) / V);  // Optimal distance between nodes
     float repulsiveForceMultiplier = 0.1f;
-    float attractiveForceMultiplier = 0.1f;
+    float attractiveForceMultiplier = 0.5f;
     float maxDisplacement = 50.0f;
 
     for (int iter = 0; iter < iterations; iter++) {
@@ -338,13 +338,12 @@ void initializeGraph() {
     graph.addEdge(3, 3, 1); // Self-loop in Component 2 for variety
 
     // Now, you have 3 connected components: {0,1,2}, {3,4}, {5,6}
-    std::cout << "Check 2." << std::endl;
-    for (int i = 0; i < 4; i++) graph.addNode();
+    /*std::cout << "Check 2." << std::endl;
+    for (int i = 0; i < 4; i++) graph.addNode();*/
 
 
     std::cout << "Check 3." << std::endl;
-    //graph.applyForceDirectedLayout();
-    graph.connectedComp();  // Find and color the connected components
+    //graph.connectedComp();  // Find and color the connected components
     graph.copyList();
 }
 
@@ -360,6 +359,7 @@ void renderGraph(Screen& currentScreen) {
     DrawTexture(avlBG, 0, 0, WHITE);
     deltaTimeGraph = GetFrameTime();
 
+    graph.applyForceDirectedLayout();
 
     if (!pauseGraph) DrawTexture(pauseButImg, pauseButton.x, pauseButton.y, WHITE);
     else DrawTexture(playButImg, pauseButton.x, pauseButton.y, WHITE);
