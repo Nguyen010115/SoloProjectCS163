@@ -115,19 +115,6 @@ void Graph::addEdge(int u, int v, int weight) {
 
 }
 
-void Graph::dfs(int u, int componentIndex, std::vector<bool>& visited) {
-    visited[u] = true;
-    nodeList[u]->colour = componentIndex;
-    copyList();
-
-    for (int v = 0; v < V; ++v) {
-        if (Mat[u][v] > 0 && !visited[v]) {
-            ColourMat[u][v] = componentIndex;
-            ColourMat[v][u] = componentIndex;
-            dfs(v, componentIndex, visited);
-        }
-    }
-}
 
 void Graph::dfsConnected(std::vector<bool>& visited, int u) {
     visited[u] = true;
@@ -180,7 +167,9 @@ void Graph::prim() {
     for (int count = 0; count < V - 1; count++) {
         int u = minKey(key, mstSet);
         mstSet[u] = true;
-
+        nodeList[u]->colour = 1;
+        if (parent[u] > 0) ColourMat[parent[u]][u] = 1;
+        copyList();
         for (int v = 0; v < V; v++) {
             if (Mat[u][v] && !mstSet[v] && Mat[u][v] < key[v]) {
                 parent[v] = u;
@@ -189,10 +178,10 @@ void Graph::prim() {
         }
     }
 
-    printf("Edges in MST:\n");
+    /*printf("Edges in MST:\n");
     for (int i = 1; i < V; i++) {
         printf("%d - %d: %d\n", parent[i], i, Mat[i][parent[i]]);
-    }
+    }*/
 }
 
 int Graph::connectedComp() {
@@ -210,7 +199,19 @@ int Graph::connectedComp() {
     return componentIndex; 
 }
 
+void Graph::dfs(int u, int componentIndex, std::vector<bool>& visited) {
+    visited[u] = true;
+    nodeList[u]->colour = componentIndex;
+    copyList();
 
+    for (int v = 0; v < V; ++v) {
+        if (Mat[u][v] > 0 && !visited[v]) {
+            ColourMat[u][v] = componentIndex;
+            ColourMat[v][u] = componentIndex;
+            dfs(v, componentIndex, visited);
+        }
+    }
+}
 
 void Graph::updateEdges() {
     edgeList.clear(); 
@@ -394,18 +395,18 @@ void initializeGraph() {
     for (int i = 0; i < 7; i++) graph.addNode();
     std::cout << "Check 1." << std::endl;
     graph.addEdge(0, 1, 1);
-    graph.addEdge(1, 2, 1);
-    graph.addEdge(2, 0, 1);
+    graph.addEdge(1, 2, 8);
+    graph.addEdge(2, 0, 7);
 
     // Component 2: Nodes 3, 4
-    graph.addEdge(3, 4, 1);
-
+    graph.addEdge(3, 4, 9);
+    graph.addEdge(2, 3, 5);
     // Component 3: Nodes 5, 6
-    graph.addEdge(5, 6, 1);
-
+    graph.addEdge(5, 6, 51);
+    graph.addEdge(4, 5, 19);
     // Additional edges to complete the 3 connected components
     graph.addEdge(0, 2, 1); // Another connection in Component 1
-    graph.addEdge(3, 3, 1); // Self-loop in Component 2 for variety
+    graph.addEdge(3, 3, 3); // Self-loop in Component 2 for variety
 
     // Now, you have 3 connected components: {0,1,2}, {3,4}, {5,6}
     /*std::cout << "Check 2." << std::endl;
@@ -414,6 +415,7 @@ void initializeGraph() {
 
     std::cout << "Check 3." << std::endl;
     //graph.connectedComp();  // Find and color the connected components
+    graph.prim();
     graph.copyList();
 }
 
