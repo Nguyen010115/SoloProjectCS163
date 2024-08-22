@@ -3,9 +3,16 @@
 
 struct TrieNode {
     std::unordered_map<char, TrieNode*> children;
+    Vector2 position;
+    char ch;
+    float radius = 0.25f;
+    float alpha = 1.0f;
+    bool visiting = false;
     bool isEndOfWord;
 
-    TrieNode() : isEndOfWord(false) {}
+    TrieNode(Vector2 pos = {0 ,0}, char ch = '0') : position(pos), ch(ch), isEndOfWord(false) {}
+
+    void draw();
 };
 
 class Trie {
