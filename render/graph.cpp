@@ -155,6 +155,46 @@ bool Graph::isConnected() {
 
 }
 
+int Graph::minKey(std::vector<int>& key, std::vector<bool>& mstSet) {
+    int min = INT_MAX, min_index;
+    for (int v = 0; v < V; v++) {
+        if (!mstSet[v] && key[v] < min) {
+            min = key[v];
+            min_index = v;
+        }
+    }
+    return min_index;
+}
+
+void Graph::prim() {
+    std::vector<int> key(V), parent(V); std::vector<bool> mstSet(V);
+
+    for (int i = 0; i < V; i++) {
+        key[i] = INT_MAX;
+        mstSet[i] = false;
+    }
+
+    key[0] = 0;
+    parent[0] = -1;
+
+    for (int count = 0; count < V - 1; count++) {
+        int u = minKey(key, mstSet);
+        mstSet[u] = true;
+
+        for (int v = 0; v < V; v++) {
+            if (Mat[u][v] && !mstSet[v] && Mat[u][v] < key[v]) {
+                parent[v] = u;
+                key[v] = Mat[u][v];
+            }
+        }
+    }
+
+    printf("Edges in MST:\n");
+    for (int i = 1; i < V; i++) {
+        printf("%d - %d: %d\n", parent[i], i, Mat[i][parent[i]]);
+    }
+}
+
 int Graph::connectedComp() {
     copyList();
     std::vector<bool> visited(V, false);

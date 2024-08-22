@@ -52,9 +52,11 @@ public:
 	void updateState(float deltaTime, float& elapsedTime, int& stateIndex, float step);
 	int getStepsSize();
 
-	void Graph::applyForceDirectedLayout(int iterations = 100, float areaWidth = 1400, float areaHeight = 600);
+	void applyForceDirectedLayout(int iterations = 100, float areaWidth = 1400, float areaHeight = 600);
 	void dfsConnected(std::vector<bool>& visited, int u);
 	bool isConnected();
+	int minKey(std::vector<int>& key, std::vector<bool>& mstSet);
+	void prim();
 
 private:
 	int V = 0;
