@@ -85,3 +85,48 @@ int Trie::countLeaves(TrieNode* node) {
     }
     return leafCount;
 }
+
+bool Trie::removeHelper(TrieNode* node, const std::string& word, int depth) {
+    // Base case: if we've reached the end of the word
+    if (depth == word.size()) {
+        // If this node is the end of the word, unmark it
+        if (!node->isEndOfWord) {
+            return false;  // The word was not found
+        }
+
+        node->isEndOfWord = false;
+
+        // If the node has no children, it can be deleted
+        return node->children.empty();
+    }
+
+    char ch = word[depth];
+    TrieNode* childNode = node->children[ch];
+
+    if (childNode == nullptr) {
+        return false;  // The word was not found
+    }
+
+    // Recursively delete the child node
+    bool shouldDeleteChild = removeHelper(childNode, word, depth + 1);
+
+    // If the child should be deleted, remove it from the map
+    if (shouldDeleteChild) {
+        delete childNode;
+        node->children.erase(ch);
+
+        // If the current node has no other children and is not the end of another word, it can be deleted
+        return !node->isEndOfWord && node->children.empty();
+    }
+
+    return false;
+}
+
+
+bool Trie::remove(const std::string& word) {
+    if (root == nullptr || word.empty()) {
+        return false;
+    }
+
+    return removeHelper(root, word, 0);
+}
