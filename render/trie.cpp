@@ -58,22 +58,20 @@ void Trie::updateNodePosition(TrieNode* root, int level, float minX, float maxX,
     root->position.x = (minX + maxX) / 2;
     root->position.y = 120.0f + level * levelSpacing;
 
-    // Recursively set positions for left and right children
-    // Number of children
-    int numChildren = root->children.size();
-    if (numChildren == 0) return;  // If no children, no need to continue
-
-    // Calculate the width for each child
-    float rangePerChild = (maxX - minX) / numChildren;
-
-    int childIndex = 0;
+    int totalLeaves = 0;
     for (auto& pair : root->children) {
-        float childMinX = minX + childIndex * rangePerChild;
-        float childMaxX = childMinX + rangePerChild;
+        totalLeaves += countLeaves(pair.second);
+    }
+
+    float currentX = minX;
+    for (auto& pair : root->children) {
+        int childLeaves = countLeaves(pair.second);
+        float childMinX = currentX;
+        float childMaxX = minX + (maxX - minX) * (static_cast<float>(childLeaves) / totalLeaves);
 
         // Recursively set positions for each child node
         updateNodePosition(pair.second, level + 1, childMinX, childMaxX, levelSpacing);
-        childIndex++;
+        currentX = childMaxX;
     }
 }
 
