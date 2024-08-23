@@ -158,7 +158,6 @@ public:
     void draw();
     void copyTree();
     bool Tree234::isInteracting(int state);
-    std::vector<std::vector<Tree234Node*>> stepRoots;
 
     int getStepsSize();
 

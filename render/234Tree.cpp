@@ -538,10 +538,15 @@ void Tree234::finalFile(std::vector<int>& input, int& stateIndex, bool& pause) {
 void Tree234::clearTree() {
     clearTreeRecursive(root);
     root = nullptr;
+    for (auto s : steps) {
+        for (auto h : s) {
+            if (h) delete h;
+        }
+    }
     nodeList.clear();
     curList.clear();
+    curEdges.clear();
     steps.clear();
-    stepRoots.clear();
     stepEdges.clear();
     size = 0;
 }
@@ -553,6 +558,7 @@ void Tree234::clearTreeRecursive(Tree234Node* node) {
     for (auto honey : node->honeycombs) {
         delete honey;
     }
+
 
     for (auto child : node->children) {
         clearTreeRecursive(child);
@@ -860,9 +866,7 @@ int Tree234::getStepsSize() {
 Tree234 testTree;
 
 void initialize234Tree() {
-    for (int i = 1; i <= 10; i++) {
-         testTree.insert(i);
-    }
+    for (int i = 1; i <= 10; i++) testTree.insert(i);
 }
 
 Interact tree234curInteract = REST;
@@ -1020,6 +1024,8 @@ void tree234File(Interact& state) {
     if (!tree234getFile) {
         std::string selectedFilePath = FileSelectDialog();
         std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
+        testTree.clearTree();
+        testTree = Tree234();
         testTree.finalFile(numbers, stateIndex234, pause234);
         tree234getFile = true;
     }
@@ -1299,6 +1305,8 @@ void tree234Create(Interact& state) {
     if ((checkClick(okInput) || IsKeyPressed(KEY_ENTER)) && !testTree.isInteracting(stateIndex234)) {
         if (tree234numCount > 0) {
             int input = std::stoi(tree234inputNumber);
+            testTree.clearTree();
+            testTree = Tree234();
             testTree.finalCreate(input, stateIndex234, pause234);
             while (tree234numCount > 0) {
                 tree234numCount--;
