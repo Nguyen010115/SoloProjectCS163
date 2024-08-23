@@ -899,7 +899,7 @@ void render234Tree(Screen& currentScreen) {
         pause234 = true;
         if (stateIndex234 > 0) {
             stateIndex234--;
-            elapsedTime234 = 0.4f;
+            elapsedTime234 = 0.8f * deltaTime234;
             testTree.updateState(stateIndex234, elapsedTime234, deltaTime234, stepTime234);
         }
     }
@@ -908,7 +908,7 @@ void render234Tree(Screen& currentScreen) {
         pause234 = true;
         if (stateIndex234 < (testTree.getStepsSize() - 2)) {
             stateIndex234++;
-            elapsedTime234 = 0.9f;
+            elapsedTime234 = 0.8f*deltaTime234;
             testTree.updateState(stateIndex234, elapsedTime234, deltaTime234, stepTime234);
         }
     }

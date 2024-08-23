@@ -83,7 +83,7 @@ constexpr float minDistance = 2 * nodeRadius + 10.0f;
 //Menu
 void initImages();
 
-void initAll();
+void initAll(Screen& cur);
 
 void render(Screen& cur);
 

@@ -9,11 +9,15 @@ int main() {
     InitWindow(constants::scene_width, constants::scene_height,
         "Data");
     SetTargetFPS(constants::frames_per_second); 
-    initAll();
   
     Screen currentScreen = MENU;
+    bool init = false;
+    
     while (!WindowShouldClose()) {
-
+        if (!init) {
+            initAll(currentScreen);
+            init = true;
+        }
         BeginDrawing();
             ClearBackground(RAYWHITE);
             render(currentScreen);

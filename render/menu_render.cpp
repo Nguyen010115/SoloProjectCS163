@@ -69,15 +69,15 @@ void initializeMenu() {
     }
 };
 
-void initAll() {
+void initAll(Screen &cur) {
     initImages();
     initializeMenu();
     initializeHash();
     initializeAVL();
     initialize234Tree();
     initializeHeap();
-
     initializeGraph();
+
 };
 
 void renderMenu(Screen& currentScreen) {
