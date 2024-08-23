@@ -734,7 +734,67 @@ void HeapInsert(Interact& state) {
     }
 };
 
-void HeapDelete(Interact& state) { return; };
+void HeapDelete(Interact& state) {
+    DrawTexture(deleteSection, hashtableOptions[2].x + 90.0f, hashtableOptions[2].y, WHITE);
+
+    if (checkCollision(okDelete)) DrawRectangleRec(okDelete, Color{ 0, 255, 0, 32 });
+    if (checkCollision(deleteSectionBox)) {
+        DrawRectangleRec(deleteSectionBox, Color{ 0, 255, 0, 32 });
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+    }
+    else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
+
+    if (checkClick(deleteSectionBox)) HeapinputClick = true;
+    else if (!checkClick(deleteSectionBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) HeapinputClick = false;
+
+    if (HeapinputClick) {
+        // Get char pressed (unicode character) on the queue
+        int key = GetCharPressed();
+
+        // Check if more characters have been pressed on the same frame
+        while (key > 0)
+        {
+            // NOTE: Only allow keys in range [32..125]
+            if ((key >= 48) && (key <= 57) && (HeapnumCount < 3))
+            {
+                HeapinputNumber[HeapnumCount] = (char)key;
+                HeapinputNumber[HeapnumCount + 1] = '\0'; // Add null terminator at the end of the string.
+                HeapnumCount++;
+            }
+
+            key = GetCharPressed();  // Check next character in the queue
+        }
+
+        // Handle backspace
+        if (IsKeyPressed(KEY_BACKSPACE))
+        {
+            HeapnumCount--;
+            if (HeapnumCount < 0) HeapnumCount = 0;
+            HeapinputNumber[HeapnumCount] = '\0';
+        }
+
+        if (fmod(HeaptimePassed, 1.0f) < 0.5f)
+        {
+            DrawText("_", (int)deleteSectionBox.x + 10 + MeasureText(HeapinputNumber, 20), (int)deleteSectionBox.y + 8, 20, DARKGREEN);
+        }
+    }
+
+    HeaptimePassed = GetTime();
+
+    DrawText(HeapinputNumber, (int)deleteSectionBox.x + 7, (int)deleteSectionBox.y + 4, 20, DARKGREEN);
+
+    if ((checkClick(okDelete) || IsKeyPressed(KEY_ENTER)) && !minHeap.isInteracting(stateIndexHeap)) {
+        if (HeapnumCount > 0) {
+            int input = std::stoi(HeapinputNumber);
+            minHeap.finalDelete(input, stateIndexHeap, pauseHeap);
+            while (HeapnumCount > 0) {
+                HeapnumCount--;
+                HeapinputNumber[HeapnumCount] = '\0';
+            }
+        }
+    }
+};
 
 void HeapSearch(Interact& state) { return; };
 
