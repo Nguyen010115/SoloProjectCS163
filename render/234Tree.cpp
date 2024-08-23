@@ -86,7 +86,7 @@ void Tree234::insert(int value) {
     else {
         insertRecursive(root, value);
     }
-    copyTree();  // Capture the current state of the tree
+    copyTree();  
 }
 
 void Tree234::insertRecursive(Tree234Node* &node, int value) {
@@ -524,6 +524,16 @@ bool Tree234::finalSearch(int value, int& stateIndex, bool& pause) {
     return true;
 }
 
+void Tree234::finalFile(std::vector<int>& input, int& stateIndex, bool& pause) {
+    pause = true;
+    stateIndex = 0;
+    clearTree();
+    for (auto i : input) insert(i);
+    pause = false;
+}
+
+
+
 // Clear the tree
 void Tree234::clearTree() {
     clearTreeRecursive(root);
@@ -948,14 +958,14 @@ void render234Tree(Screen& currentScreen) {
 
     testTree.draw();
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
     }
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
     if (checkClick(returnBar) || checkClick(returnButton)) currentScreen = MENU;
 
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         if (checkClick(hashtableOptions[i])) {
             if (!tree234curInteracting) {
                 tree234curInteract = constants::hashInter[i];
@@ -989,6 +999,10 @@ void tree234Interacting(Interact& state) {
     {
         tree234Search(state);
     } break;
+    case FILEINTER:
+    {
+        tree234File(state);
+    }
 
     default: break;
     }
@@ -999,7 +1013,17 @@ int tree234numCount = 0;
 bool tree234inputClick = false;
 bool tree234randomClick = false;
 float tree234timePassed = 0.0f;
+bool tree234getFile = false;
 
+
+void tree234File(Interact& state) {
+    if (!tree234getFile) {
+        std::string selectedFilePath = FileSelectDialog();
+        std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
+        testTree.finalFile(numbers, stateIndex234, pause234);
+        tree234getFile = true;
+    }
+}
 
 void tree234Insert(Interact& state) {
     DrawTexture(insertSection, hashtableOptions[1].x + 90.0f, hashtableOptions[1].y, WHITE);

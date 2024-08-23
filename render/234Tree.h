@@ -177,6 +177,8 @@ public:
 
     bool Tree234::finalSearch(int value, int& stateIndex, bool& pause);
 
+    void Tree234::finalFile(std::vector<int>& input, int& stateIndex, bool& pause);
+
 private:
     Tree234Node* root;
     std::vector<HoneycombNode*> nodeList;
