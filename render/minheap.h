@@ -83,23 +83,18 @@ public:
     void MinHeap::updateState(int& stateIndex, float& elapsedTime, float deltaTime, float step);
     int MinHeap::getStepsSize();
     
+    bool MinHeap::isInteracting(int state);
     void MinHeap::finalFile(std::vector<int>& input, int& stateIndex, bool& pause);
     void MinHeap::finalInsert(int input, int& stateIndex, bool& pause);
-  
-
     void MinHeap::clearTree();
-
 
 private:
     std::vector<MinHeapNode*> nodeList;    
     std::vector<MinHeapNode*> heapArray; 
     std::vector<std::vector<MinHeapNode*>> steps;
     std::vector<std::vector<EdgeHeap*>> stepsEdge;
-
     std::vector<MinHeapNode*> curList;
     std::vector<EdgeHeap*> curEdges;
-
-
     void addEdge(int parentIndex, int childIndex);
     Vector2 calculateNodePosition(int index);
 };

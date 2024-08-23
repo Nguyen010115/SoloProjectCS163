@@ -443,6 +443,11 @@ void MinHeap::clearTree() {
     curEdges.clear();
 }
 
+bool MinHeap::isInteracting(int state) {
+    if (steps.size() == 0) return false;
+    return (state < steps.size() - 1);
+}
+
 void MinHeap::finalFile(std::vector<int>& input, int& stateIndex, bool& pause) {
     pause = true;
     stateIndex = 0;
@@ -453,7 +458,14 @@ void MinHeap::finalFile(std::vector<int>& input, int& stateIndex, bool& pause) {
 
 void MinHeap::finalInsert(int input, int& stateIndex, bool& pause) {
     pause = true;
-    
+    stateIndex = 0;
+
+    steps.clear();
+    stepsEdge.clear();
+    copyHeap();
+    deleteElement(input);
+    pause = false;
+
 }
 
 /////////////////////////////////////
@@ -624,7 +636,79 @@ bool HeapgetFile = false;
 //    }
 //}
 
-void HeapInsert(Interact& state) { return; };
+void HeapInsert(Interact& state) {
+    DrawTexture(insertSection, hashtableOptions[1].x + 90.0f, hashtableOptions[1].y, WHITE);
+
+    if (checkCollision(randomInsert)) DrawRectangleRec(randomInsert, Color{ 0, 255, 0, 32 });
+    if (checkCollision(okInput)) DrawRectangleRec(okInput, Color{ 0, 255, 0, 32 });
+    if (checkCollision(inputSection)) {
+        DrawRectangleRec(inputSection, Color{ 0, 255, 0, 32 });
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+    }
+    else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
+
+    if (checkClick(inputSection)) HeapinputClick = true;
+    else if (!checkClick(inputSection) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) HeapinputClick = false;
+
+    if (HeapinputClick) {
+        // Get char pressed (unicode character) on the queue
+        int key = GetCharPressed();
+
+        // Check if more characters have been pressed on the same frame
+        while (key > 0)
+        {
+            // NOTE: Only allow keys in range [32..125]
+            if ((key >= 48) && (key <= 57) && (HeapnumCount < 3))
+            {
+                HeapinputNumber[HeapnumCount] = (char)key;
+                HeapinputNumber[HeapnumCount + 1] = '\0'; // Add null terminator at the end of the string.
+                HeapnumCount++;
+            }
+
+            key = GetCharPressed();  // Check next character in the queue
+        }
+
+        // Handle backspace
+        if (IsKeyPressed(KEY_BACKSPACE))
+        {
+            HeapnumCount--;
+            if (HeapnumCount < 0) HeapnumCount = 0;
+            HeapinputNumber[HeapnumCount] = '\0';
+        }
+
+        if (fmod(HeaptimePassed, 1.0f) < 0.5f)
+        {
+            DrawText("_", (int)inputSection.x + 10 + MeasureText(HeapinputNumber, 20), (int)inputSection.y + 8, 20, DARKGREEN);
+        }
+    }
+
+    HeaptimePassed = GetTime();
+
+    DrawText(HeapinputNumber, (int)inputSection.x + 7, (int)inputSection.y + 4, 20, DARKGREEN);
+
+    if ((checkClick(okInput) || IsKeyPressed(KEY_ENTER)) && !minHeap.isInteracting(stateIndexHeap)) {
+        if (HeapnumCount > 0) {
+            int input = std::stoi(HeapinputNumber);
+            minHeap.finalInsert(input, stateIndexHeap, pauseHeap);
+            while (HeapnumCount > 0) {
+                HeapnumCount--;
+                HeapinputNumber[HeapnumCount] = '\0';
+            }
+        }
+    }
+
+    if (checkClick(randomInsert) && !minHeap.isInteracting(stateIndexHeap)) {
+        int number = rand() % 1000;
+        if (number == 0) number++;
+        std::string str = std::to_string(number);
+        for (int i = 0; i < str.size(); i++) {
+            HeapinputNumber[i] = str[i];
+        }
+        HeapnumCount = str.size();
+        HeapinputNumber[HeapnumCount] = '\0';
+    }
+};
 
 void HeapDelete(Interact& state) { return; };
 
