@@ -492,6 +492,18 @@ bool MinHeap::finalSearch(int value, int& stateIndex, bool& pause)
     return true;
 }
 
+void MinHeap::finalCreate(int value, int& stateIndex, bool& pause) {
+    pause = true;
+    clearTree();
+    stateIndex = 0;
+    for (int i = 0; i < value; i++) {
+        int s = rand() % 1000;
+        if (s == 0) s++;
+        insert(s);
+    }
+    pause = false;
+}
+
 /////////////////////////////////////
 
 MinHeap minHeap;
@@ -797,8 +809,140 @@ void HeapDelete(Interact& state) {
     }
 };
 
-void HeapSearch(Interact& state) { return; };
+void HeapSearch(Interact& state) {
+    DrawTexture(deleteSection, hashtableOptions[3].x + 90.0f, hashtableOptions[3].y, WHITE);
 
-void HeapCreate(Interact& state) { return; };
+    if (checkCollision(okSearch)) DrawRectangleRec(okSearch, Color{ 0, 255, 0, 32 });
+    if (checkCollision(searchSectionBox)) {
+        DrawRectangleRec(searchSectionBox, Color{ 0, 255, 0, 32 });
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+    }
+    else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
-void HeapFile(Interact& state) { return; };
+    if (checkClick(searchSectionBox)) HeapinputClick = true;
+    else if (!checkClick(searchSectionBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) HeapinputClick = false;
+
+    if (HeapinputClick) {
+        int key = GetCharPressed();
+
+        while (key > 0) {
+            if ((key >= 48) && (key <= 57) && (HeapnumCount < 2)) {
+                HeapinputNumber[HeapNumCount] = (char)key;
+                HeapInputNumber[HeapNumCount + 1] = '\0';
+                HeapNumCount++;
+            }
+
+            key = GetCharPressed();
+        }
+
+        if (IsKeyPressed(KEY_BACKSPACE)) {
+            HeapnumCount--;
+            if (HeapnumCount < 0) HeapnumCount = 0;
+            HeapinputNumber[HeapnumCount] = '\0';
+        }
+
+        if (fmod(HeaptimePassed, 1.0f) < 0.5f) {
+            DrawText("_", (int)searchSectionBox.x + 10 + MeasureText(HeapinputNumber, 20), (int)searchSectionBox.y + 8, 20, DARKGREEN);
+        }
+    }
+
+    HeaptimePassed = GetTime();
+
+    DrawText(HeapinputNumber, (int)searchSectionBox.x + 7, (int)searchSectionBox.y + 4, 20, DARKGREEN);
+
+    if ((checkClick(okSearch) || IsKeyPressed(KEY_ENTER)) && !minHeap.isInteracting(stateIndexHeap)) {
+        if (HeapnumCount > 0) {
+            int input = std::stoi(HeapinputNumber);
+            minHeap.finalSearch(input, stateIndexHeap, pauseHeap);
+            while (HeapnumCount > 0) {
+                HeapnumCount--;
+                HeapinputNumber[HeapnumCount] = '\0';
+            }
+        }
+    }
+}
+
+void HeapCreate(Interact& state) {
+    DrawTexture(insertSection, hashtableOptions[0].x + 90.0f, hashtableOptions[0].y, WHITE);
+
+    if (checkCollision(randomCreate)) DrawRectangleRec(randomCreate, Color{ 0, 255, 0, 32 });
+    if (checkCollision(ok1random)) DrawRectangleRec(ok1random, Color{ 0, 255, 0, 32 });
+    if (checkCollision(random1Section)) {
+        DrawRectangleRec(random1Section, Color{ 0, 255, 0, 32 });
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+    }
+    else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
+
+    if (checkClick(random1Section)) HeapinputClick = true;
+    else if (!checkClick(random1Section) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) HeapinputClick = false;
+
+
+    if (HeapinputClick) {
+        int key = GetCharPressed();
+
+        while (key > 0) {
+            if ((key >= 48) && (key <= 57) && (HeapnumCount < 3)) {
+                HeapinputNumber[HeapnumCount] = (char)key;
+                HeapinputNumber[HeapnumCount + 1] = '\0';
+                HeapnumCount++;
+            }
+
+            key = GetCharPressed();
+        }
+
+        if (IsKeyPressed(KEY_BACKSPACE)) {
+            HeapnumCount--;
+            if (HeapnumCount < 0) HeapnumCount = 0;
+            HeapinputNumber[HeapnumCount] = '\0';
+        }
+
+        if (fmod(HeaptimePassed, 1.0f) < 0.5f) {
+            DrawText("_", (int)random1Section.x + 10 + MeasureText(HeapinputNumber, 20), (int)random1Section.y + 8, 20, DARKGREEN);
+        }
+    }
+
+
+    HeaptimePassed = GetTime();
+
+    DrawText(HeapinputNumber, (int)random1Section.x + 7, (int)random1Section.y + 4, 20, DARKGREEN);
+
+
+    if (HeapnumCount > 0) {
+        int inputValue = std::stoi(HeapinputNumber);  // Convert the string to an integer
+
+        if (inputValue > 50) {
+            // Reset the input to "30"
+            HeapinputNumber[0] = '5';
+            HeapinputNumber[1] = '0';
+            HeapinputNumber[2] = '\0';
+            HeapnumCount = 2;  // Update the count to reflect the new length of the input
+        }
+    }
+
+    if ((checkClick(okInput) || IsKeyPressed(KEY_ENTER)) && !minHeap.isInteracting(stateIndexHeap)) {
+        if (HeapnumCount > 0) {
+            int input = std::stoi(HeapinputNumber);
+            minHeap.finalCreate(input, stateIndexHeap, pauseHeap);
+            while (HeapnumCount > 0) {
+                HeapnumCount--;
+                HeapinputNumber[HeapnumCount] = '\0';
+            }
+        }
+    }
+
+
+
+    if (checkClick(randomCreate) && !minHeap.isInteracting(stateIndexHeap)) {
+        int number = rand() % 51;
+        if (number == 0) number++;
+        std::string str = std::to_string(number);
+        for (int i = 0; i < str.size(); i++) {
+            HeapinputNumber[i] = str[i];
+        }
+        HeapnumCount = str.size();
+        HeapinputNumber[HeapnumCount] = '\0';
+    }
+}
+
+

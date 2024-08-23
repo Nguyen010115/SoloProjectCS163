@@ -88,6 +88,7 @@ public:
     void MinHeap::finalInsert(int input, int& stateIndex, bool& pause);
     void MinHeap::finalDelete(int value, int& stateIndex, bool& pause);
     bool MinHeap::finalSearch(int value, int& stateIndex, bool& pause);
+    void MinHeap::finalCreate(int value, int& stateIndex, bool& pause);
     void MinHeap::clearTree();
 
 private:
