@@ -24,7 +24,7 @@ extern Texture2D tree234BG;
 extern Texture2D pauseButImg;
 extern Texture2D playButImg;
 extern Texture2D slidingBut;
-
+extern Texture2D loadingScreen;
 
 
 

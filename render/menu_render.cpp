@@ -9,6 +9,7 @@ Texture2D tree234BG;
 Texture2D pauseButImg;
 Texture2D playButImg;
 Texture2D slidingBut;
+Texture2D loadingScreen;
 
 Texture2D honeycomb;
 Texture2D honeydrop;
@@ -41,13 +42,10 @@ void initImages() {
     playButImg = LoadTexture("resources/images/playbutton.png");
     slidingBut = LoadTexture("resources/images/slidingbar-button.png");
     tree234BG = LoadTexture("resources/images/234_BG.png");
-
-
 };
 
 void unloadAll() {
     UnloadFont(font);
-
     UnloadTexture(menuBG);
     UnloadTexture(hashtableBG);
     UnloadTexture(honeycomb);
@@ -57,6 +55,7 @@ void unloadAll() {
     UnloadTexture(deleteSection);
     UnloadTexture(createSection);
     UnloadTexture(tree234BG);
+    UnloadTexture(loadingScreen);
 };
 
 void initializeMenu() {
@@ -70,6 +69,8 @@ void initializeMenu() {
 };
 
 void initAll(Screen &cur) {
+    loadingScreen = LoadTexture("resources/images/loading_screen.png");
+
     initImages();
     initializeMenu();
     initializeHash();
