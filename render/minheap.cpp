@@ -122,7 +122,7 @@ void MinHeap::updateEdges() {
     }
 }
 
-void MinHeap::search(int input) {
+bool MinHeap::search(int input) {
     copyHeap();
     int indexToDelete = -1;
     int listIndex = -1;
@@ -134,13 +134,13 @@ void MinHeap::search(int input) {
     }
     if (indexToDelete == -1) {
         std::cout << "Value not found in the heap." << std::endl;
-        return;
+        return false;
     }
 
     heapArray[indexToDelete]->visiting = true;
     copyHeap();
     heapArray[indexToDelete]->visiting = false;
-
+    return true;
 
 }
 
@@ -477,6 +477,19 @@ void MinHeap::finalDelete(int value, int& stateIndex, bool& pause) {
     copyHeap();
     deleteElement(value);
     pause = false;
+}
+
+bool MinHeap::finalSearch(int value, int& stateIndex, bool& pause)
+{
+    pause = true;
+    stateIndex = 0;
+
+    steps.clear();
+    stepsEdge.clear();
+    copyHeap();
+    pause = false;
+    if (!search(value)) return false;
+    return true;
 }
 
 /////////////////////////////////////
