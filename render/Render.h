@@ -178,6 +178,19 @@ void initializeHeap();
 
 void renderHeap(Screen& currentScreen);
 
+void HeapInteracting(Interact& state);
+
+void HeapInsert(Interact& state);
+
+void HeapDelete(Interact& state);
+
+void HeapSearch(Interact& state);
+
+void HeapCreate(Interact& state);
+
+void HeapFile(Interact& state);
+
+
 
 //Graph
 

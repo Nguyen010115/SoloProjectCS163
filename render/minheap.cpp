@@ -384,6 +384,8 @@ float stepHeap = 1.0f;
 int stateIndexHeap = 0;
 bool pauseHeap = false;
 bool isDraggingHeap = false;
+bool heapCurInteracting = false;
+Interact heapCurInteract = REST;
 
 void initializeHeap() {
     for (int i = 10; i >= 1; i--) minHeap.insert(i);
@@ -410,7 +412,7 @@ void renderHeap(Screen& currentScreen) {
         pauseHeap = true;
         if (stateIndexHeap > 0) {
             stateIndexHeap--;
-            elapsedTimeHeap = 0.9f;
+            elapsedTimeHeap = 0.8f*deltaTimeHeap;
             minHeap.updateState(stateIndexHeap, elapsedTimeHeap, deltaTimeHeap, stepHeap);
         }
     }
@@ -419,7 +421,7 @@ void renderHeap(Screen& currentScreen) {
         pauseHeap = true;
         if (stateIndexHeap < (minHeap.getStepsSize() - 2)) {
             stateIndexHeap++;
-            elapsedTimeHeap = 0.9f;
+            elapsedTimeHeap = 0.8f * deltaTimeHeap;
             minHeap.updateState(stateIndexHeap, elapsedTimeHeap, deltaTimeHeap, stepHeap);
         }
     }
@@ -480,5 +482,53 @@ void renderHeap(Screen& currentScreen) {
     }
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
     if (checkClick(returnBar) || checkClick(returnButton)) currentScreen = MENU;
-
+    for (int i = 0; i < 5; i++) {
+        if (checkClick(hashtableOptions[i])) {
+            if (!heapCurInteracting) {
+                heapCurInteract = constants::hashInter[i];
+                heapCurInteracting = true;
+            }
+            else {
+                heapCurInteracting = false;
+                heapCurInteract = REST;
+            }
+        }
+    }
+    tree234Interacting(heapCurInteract);
 }
+
+void HeapInteracting(Interact& state) {
+    switch (state)
+    {
+    case CREATE:
+    {
+        HeapCreate(state);
+    } break;
+    case INSERT:
+    {
+        HeapInsert(state);
+    } break;
+    case DELETE:
+    {
+        HeapDelete(state);
+    } break;
+    case SEARCH:
+    {
+        HeapSearch(state);
+    } break;
+    case FILEINTER:
+    {
+        HeapFile(state);
+    }
+
+    default: break;
+    }
+};
+
+char HeapinputNumber[4] = "\0";
+int HeapnumCount = 0;
+bool HeapinputClick = false;
+bool HeaprandomClick = false;
+float HeaptimePassed = 0.0f;
+bool HeapgetFile = false;
+
