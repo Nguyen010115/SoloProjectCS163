@@ -4,7 +4,7 @@ void GraphNode::draw() {
     if (value == -1) return;
 
     // Determine the color with fading effect using the alpha value
-    Color gradientStart = ColorAlpha(WHITE, alpha);
+    //Color gradientStart = ColorAlpha(WHITE, alpha);
     Color gradientEnd = ColorAlpha(GOLD, alpha);
     Color outlineColor = ColorAlpha(ORANGE, alpha);
     Color textColor = ColorAlpha(BLACK, alpha);
@@ -488,7 +488,11 @@ void renderGraph(Screen& currentScreen) {
 
         // Ensure slidingButton doesn't go out of bounds
         if (slidingButton.x < minX) slidingButton.x = minX;
-        if (slidingButton.x > maxX) slidingButton.x = maxX;
+        if (slidingButton.x > maxX) {
+            slidingButton.x = maxX;
+            stateIndexGraph = graph.getStepsSize() - 1;
+        }
+
 
         // Update the stateIndex based on the slidingButton's position
         if (graph.getStepsSize() > 0) {
