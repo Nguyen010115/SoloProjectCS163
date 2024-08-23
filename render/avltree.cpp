@@ -419,7 +419,6 @@ avlNode* avlTree::deleteRecursive(avlNode* node, int value) {
 
     node->alphavisiting = 1.0f;
     node->visiting = true;
-    //printInOrder(root);
     updatePositions();
     updateEdges();
     copyTree();
