@@ -64,7 +64,59 @@ void HoneycombNode::draw() {
 //        return a->values[0] < b->values[0];
 //        });
 //}
+void Tree234Node::addCombs(HoneycombNode* comb) {
+    honeycombs.push_back(comb);
+    if (honeycombs.size() > 1) std::sort(honeycombs.begin(), honeycombs.end(), [](const HoneycombNode* a, const HoneycombNode* b) {
+        return a->value < b->value;
+        });
+}
 
+void Tree234Node::updateEdges() {
+    edges.clear();
+
+    if (children.empty()) return;
+
+    float honeycombWidth = 46.0f; // Assuming the honeycomb width is twice the offset used earlier (26.0f)
+
+    for (size_t i = 0; i < children.size(); i++) {
+        Vector2 start;
+
+        // Determine the connection point based on the child index
+        if (i == 0) {
+            // First child connects to the midpoint of the left edge of the first honeycomb
+            start = { honeycombs[0]->position.x - honeycombWidth / 2, honeycombs[0]->position.y };
+        }
+        else if (i == 1) {
+            // Second child connects to the midpoint of the right edge of the first honeycomb
+            start = { honeycombs[0]->position.x + honeycombWidth / 2, honeycombs[0]->position.y };
+        }
+        else if (i == 2) {
+            // Third child connects to the midpoint of the right edge of the second honeycomb (if it exists)
+            if (honeycombs.size() > 1) {
+                start = { honeycombs[1]->position.x + honeycombWidth / 2, honeycombs[1]->position.y };
+            }
+        }
+        else if (i == 3) {
+            // Fourth child connects to the midpoint of the right edge of the third honeycomb (if it exists)
+            if (honeycombs.size() > 2) {
+                start = { honeycombs[2]->position.x + honeycombWidth / 2, honeycombs[2]->position.y };
+            }
+        }
+
+        Vector2 end = children[i]->position;
+        edges.emplace_back(start, end);
+    }
+}
+
+void Tree234Node::updateVisit() {
+    if (honeycombs.size() > 0) for (auto& comb : honeycombs) if (comb) comb->visit = true;
+}
+
+void Tree234Node::unvisit() {
+    if (honeycombs.size() > 0) for (auto& comb : honeycombs) if (comb)  comb->visit = false;
+}
+
+void draw();
 
 Tree234::Tree234() : size(0), root(nullptr) {}
 
