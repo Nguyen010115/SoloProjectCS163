@@ -116,7 +116,17 @@ void Tree234Node::unvisit() {
     if (honeycombs.size() > 0) for (auto& comb : honeycombs) if (comb)  comb->visit = false;
 }
 
-void draw();
+void Tree234Node::draw() {
+    // Draw edges first
+    for (auto& edge : edges) {
+        edge.draw();
+    }
+
+    // Then draw the honeycombs
+    for (auto& honeycomb : honeycombs) {
+        honeycomb->draw();
+    }
+}
 
 Tree234::Tree234() : size(0), root(nullptr) {}
 
@@ -930,11 +940,21 @@ float stepTime234 = 1.0f;
 int stateIndex234 = 0;
 bool pause234 = false;
 bool isDragging234 = false;
-
+bool doubleSpeed234 = false;
 
 void render234Tree(Screen& currentScreen) {
     DrawTexture(tree234BG, 0, 0, WHITE);
     deltaTime234 = GetFrameTime();
+
+    if (checkClick(changeSpeed)) doubleSpeed234 = !doubleSpeed234;
+    if (!doubleSpeed234) {
+        stepTime234 = 1.0f;
+        DrawTexture(speed1x, changeSpeed.x, changeSpeed.y, WHITE);
+    }
+    else {
+        stepTime234 = 0.5f;
+        DrawTexture(speed2x, changeSpeed.x, changeSpeed.y, WHITE);
+    }
 
     if (!pause234) DrawTexture(pauseButImg, pauseButton.x, pauseButton.y, WHITE);
     else DrawTexture(playButImg, pauseButton.x, pauseButton.y, WHITE);

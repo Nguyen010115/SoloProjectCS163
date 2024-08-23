@@ -69,6 +69,8 @@ public:
 	void finalMSTPrim(int& stateIndex, bool& pause);
 	void finalConnectedComponents(int& stateIndex, bool& pause);
 	void clearGraph();
+
+
 private:
 	int V = 0;
 	std::vector<GraphNode*> nodeList;
