@@ -319,6 +319,8 @@ void MinHeap::mixedNode(MinHeapNode* target, MinHeapNode* start, MinHeapNode* en
 }
 
 void MinHeap::updateState(int& stateIndex, float& elapsedTime, float deltaTime, float step) {
+    if (steps.size() < 1) return;
+
     if (stateIndex < 0 || stateIndex >= steps.size() - 1) return; // Ensure stateIndex is within valid range
     elapsedTime += deltaTime;
     float G = elapsedTime / step;  // Assuming transition over 1 second
