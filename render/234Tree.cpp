@@ -881,7 +881,7 @@ bool isDragging234 = false;
 
 
 void render234Tree(Screen& currentScreen) {
-    DrawTexture(avlBG, 0, 0, WHITE);
+    DrawTexture(tree234BG, 0, 0, WHITE);
     deltaTime234 = GetFrameTime();
 
     if (!pause234) DrawTexture(pauseButImg, pauseButton.x, pauseButton.y, WHITE);

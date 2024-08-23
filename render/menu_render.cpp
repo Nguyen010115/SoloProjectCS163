@@ -5,6 +5,7 @@
 Texture2D menuBG;
 Texture2D hashtableBG;
 Texture2D avlBG;
+Texture2D tree234BG;
 Texture2D pauseButImg;
 Texture2D playButImg;
 Texture2D slidingBut;
@@ -39,9 +40,7 @@ void initImages() {
     pauseButImg = LoadTexture("resources/images/pausebutton.png");
     playButImg = LoadTexture("resources/images/playbutton.png");
     slidingBut = LoadTexture("resources/images/slidingbar-button.png");
-
-
-
+    tree234BG = LoadTexture("resources/images/234_BG.png");
 
 
 };
@@ -57,7 +56,7 @@ void unloadAll() {
     UnloadTexture(insertSection);
     UnloadTexture(deleteSection);
     UnloadTexture(createSection);
-
+    UnloadTexture(tree234BG);
 };
 
 void initializeMenu() {

@@ -20,6 +20,7 @@
 extern Texture2D menuBG;
 extern Texture2D hashtableBG;
 extern Texture2D avlBG;
+extern Texture2D tree234BG;
 extern Texture2D pauseButImg;
 extern Texture2D playButImg;
 extern Texture2D slidingBut;
