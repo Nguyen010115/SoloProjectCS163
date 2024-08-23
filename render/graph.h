@@ -58,6 +58,17 @@ public:
 	int minKey(std::vector<int>& key, std::vector<bool>& mstSet);
 	void prim();
 
+
+	void mixedNode(GraphNode* target, GraphNode* start, GraphNode* end, float mixCoeff);
+	bool isInteracting(int state);
+	void finalFile(std::vector<int>& input, int& stateIndex, bool& pause);
+	void finalInsert(int input, int& stateIndex, bool& pause);
+	void finalDelete(int value, int& stateIndex, bool& pause);
+	bool finalSearch(int value, int& stateIndex, bool& pause);
+	void finalCreate(int value, int& stateIndex, bool& pause);
+	void finalMSTPrim(int& stateIndex, bool& pause);
+	void finalConnectedComponents(int& stateIndex, bool& pause);
+	void clearGraph();
 private:
 	int V = 0;
 	std::vector<GraphNode*> nodeList;

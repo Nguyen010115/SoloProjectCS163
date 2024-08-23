@@ -83,7 +83,7 @@ public:
 
 	void updateState(int& stateIndex, float& elapsedTime, float deltaTime);
 	void mixNodes(avlNode* target, avlNode* start, avlNode* end, float mixCoeff);
-	void avlTree::updateTree(float deltaTime, float& elapseTime, int& stateIndex);
+	void avlTree::updateTree(float deltaTime, float& elapseTime, int& stateIndex, float step);
 
 	void finalDelete(int value, int& stateIndex,bool& pause);
 	void finalInsert(int value, int& stateIndex,bool& pause);

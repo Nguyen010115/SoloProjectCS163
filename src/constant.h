@@ -46,6 +46,6 @@ namespace constants {
 	
 
 
-}  // namespace constants
+}  
 
 #endif  // CONSTANTS_HPP_

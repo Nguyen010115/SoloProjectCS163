@@ -336,7 +336,7 @@ void avlTree::updateState(int& stateIndex, float& elapsedTime, float deltaTime) 
     if (stateIndex < 0 || stateIndex >= steps.size() - 1) return;
 
     float G = elapsedTime / deltaTime;
-    if (G > deltaTime) G = deltaTime; 
+    if (G > 1.0f) G = 1.0f; 
 
     std::vector<avlNode*>& currentStep = steps[stateIndex];
     std::vector<avlNode*>& nextStep = steps[stateIndex + 1];
@@ -371,10 +371,10 @@ void avlTree::updateState(int& stateIndex, float& elapsedTime, float deltaTime) 
     }
 }
 
-void avlTree::updateTree(float deltaTime, float &elapsedTime, int& stateIndex) {
+void avlTree::updateTree(float deltaTime, float &elapsedTime, int& stateIndex, float stepTime) {
     elapsedTime += deltaTime;
 
-    if (elapsedTime >= 1.0f) {
+    if (elapsedTime >= stepTime) {
         elapsedTime = 0.0f;
         stateIndex++;
         if (stateIndex >= steps.size() - 1) {
@@ -382,7 +382,7 @@ void avlTree::updateTree(float deltaTime, float &elapsedTime, int& stateIndex) {
         }
     }
 
-    if (steps.size() > 0) updateState(stateIndex, elapsedTime, 1.0f);
+    if (steps.size() > 0) updateState(stateIndex, elapsedTime, stepTime);
 }
 
 
@@ -703,17 +703,26 @@ void initializeAVL() {
 
 float deltaTime = 0.0f;
 float elapsedTime = 0.0f;
+float stepTime = 1.0f;
 int stateIndex = 0;
 bool pause = false;
 bool isDragging = false;
 bool getFile = false;
-
+bool doubleSpeed = false;
 
 
 void renderAVLtree(Screen& currentScreen) {
 	DrawTexture(avlBG, 0, 0, WHITE);
     deltaTime = GetFrameTime();
-
+    if (checkClick(changeSpeed)) doubleSpeed = !doubleSpeed;
+    if (!doubleSpeed) {
+        stepTime = 1.0f;
+        DrawTexture(speed1x, changeSpeed.x, changeSpeed.y, WHITE);
+    }
+    else {
+        stepTime = 0.5f;
+        DrawTexture(speed2x, changeSpeed.x, changeSpeed.y, WHITE);
+    }
 
     if (!pause) DrawTexture(pauseButImg, pauseButton.x, pauseButton.y, WHITE);
     else DrawTexture(playButImg, pauseButton.x, pauseButton.y, WHITE);
@@ -728,8 +737,8 @@ void renderAVLtree(Screen& currentScreen) {
         pause = true;
         if (stateIndex > 0) {
             stateIndex--;
-            elapsedTime = 0.9f;
-            avl.updateTree(deltaTime, elapsedTime, stateIndex);
+            elapsedTime = 0.8f*stepTime;
+            avl.updateTree(deltaTime, elapsedTime, stateIndex, stepTime);
         }
     }
 
@@ -737,13 +746,13 @@ void renderAVLtree(Screen& currentScreen) {
         pause = true;
         if (stateIndex < (avl.getStepsSize() - 2)) {
             stateIndex++;
-            elapsedTime = 0.9f;
-            avl.updateTree(deltaTime, elapsedTime, stateIndex);
+            elapsedTime = 0.8f*stepTime;
+            avl.updateTree(deltaTime, elapsedTime, stateIndex, stepTime);
         }
     }
 
 
-    if (!pause) avl.updateTree(deltaTime, elapsedTime, stateIndex);
+    if (!pause) avl.updateTree(deltaTime, elapsedTime, stateIndex, stepTime);
 
     if (checkClick(slidingButton)) {
         isDragging = true; 
@@ -778,7 +787,7 @@ void renderAVLtree(Screen& currentScreen) {
             stateIndex = static_cast<int>(relativePosition * (avl.getStepsSize() - 1));
             elapsedTime = 0.8f; // Reset elapsed time when manually adjusting the state
             pause = true;  // Pause the animation when dragging the slider
-            avl.updateTree(deltaTime, elapsedTime, stateIndex);  // Update the tree state
+            avl.updateTree(deltaTime, elapsedTime, stateIndex, stepTime);  // Update the tree state
         }
     }
     else {

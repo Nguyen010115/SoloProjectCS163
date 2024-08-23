@@ -29,6 +29,10 @@ extern Texture2D insertSection;
 extern Texture2D deleteSection;
 extern Texture2D createSection;
 
+extern Texture2D speed1x;
+extern Texture2D speed2x;
+
+
 extern Font font;
 
 extern Color darkGreen;
@@ -64,6 +68,7 @@ extern Rectangle forWard;
 extern Rectangle pauseButton;
 extern Rectangle slidingButton;
 
+extern Rectangle changeSpeed;
 
 constexpr const Color graphColour[5] = { MAGENTA, MAROON, DARKBLUE, DARKBROWN, DARKGRAY };
 constexpr float minX = 200.0f;
@@ -82,8 +87,6 @@ void initAll(Screen& cur);
 void render(Screen& cur);
 
 void initializeMenu();
-
-void initializeHash();
 
 void renderMenu(Screen& currentScreen);
 
@@ -117,6 +120,8 @@ void setupButtonScale(Rectangle& button, float x, float y, float wide, float hei
 
 
 //Hash Table
+void initializeHash();
+
 void renderHashTable(Screen& currentScreen);
 
 void hashInteracting(Interact& state);
@@ -186,6 +191,23 @@ void HeapCreate(Interact& state);
 void HeapFile(Interact& state);
 
 
+//Trie
+
+void initializeTrie();
+
+void renderTrie(Screen& currentScreen);
+
+void TrieInteracting(Interact& state);
+
+void TrieInsert(Interact& state);
+
+void TrieDelete(Interact& state);
+
+void TrieSearch(Interact& state);
+
+void TrieCreate(Interact& state);
+
+void TrieFile(Interact& state);
 
 //Graph
 
@@ -194,3 +216,11 @@ Vector2 generateRandomPosition();
 void initializeGraph();
 
 void renderGraph(Screen& currentScreen);
+
+void GraphCreate(Interact& state);
+
+void GraphFile(Interact& state);
+
+void GraphMSTPrim(Interact& state);
+
+void GraphConnectedComponents(Interact& state);

@@ -18,6 +18,9 @@ Texture2D insertSection;
 Texture2D deleteSection;
 Texture2D createSection;
 
+Texture2D speed1x;
+Texture2D speed2x;
+
 Font font;
 
 Color darkGreen;
@@ -42,6 +45,8 @@ void initImages() {
     playButImg = LoadTexture("resources/images/playbutton.png");
     slidingBut = LoadTexture("resources/images/slidingbar-button.png");
     tree234BG = LoadTexture("resources/images/234_BG.png");
+    speed1x = LoadTexture("resources/images/1x.png");
+    speed2x = LoadTexture("resources/images/2x.png");
 };
 
 void unloadAll() {

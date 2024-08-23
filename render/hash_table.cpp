@@ -393,7 +393,7 @@ Rectangle backWard;
 Rectangle forWard;
 Rectangle pauseButton;
 Rectangle slidingButton;
-
+Rectangle changeSpeed;
 
 void initializeHash() {
 
@@ -433,8 +433,7 @@ void initializeHash() {
     setupButtonScale(forWard, 1006.3f, 987.2f, 65.5, 56.8);
     setupButtonScale(pauseButton, 916.4f, 980.7f, 69.7f, 69.7f);
     setupButtonScale(slidingButton, 1123.9f, 984.6f, 55.0f, 48.0f);
-
-
+    setupButtonScale(changeSpeed, 1801.4f, 964.8f, 80.0f, 80.0f);
 };
 
  bool check = false;
