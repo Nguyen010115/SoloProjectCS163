@@ -72,19 +72,21 @@ public:
 
     void MinHeap::updateEdges();
 
-    void MinHeap::printEdges();
     void MinHeap::printHeapArray();
     void MinHeap::debug();
     std::vector<EdgeHeap*> edges;
     void copyHeap();
     void MinHeap::copyHeap2();
-
+    void MinHeap::search(int input);
 
     void MinHeap::mixedNode(MinHeapNode* target, MinHeapNode* start, MinHeapNode* end, float mixCoeff);
     void MinHeap::updateState(int& stateIndex, float& elapsedTime, float deltaTime, float step);
     int MinHeap::getStepsSize();
     
     void MinHeap::finalFile(std::vector<int>& input, int& stateIndex, bool& pause);
+    void MinHeap::finalInsert(int input, int& stateIndex, bool& pause);
+  
+
     void MinHeap::clearTree();
 
 

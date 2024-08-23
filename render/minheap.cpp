@@ -122,6 +122,28 @@ void MinHeap::updateEdges() {
     }
 }
 
+void MinHeap::search(int input) {
+    copyHeap();
+    int indexToDelete = -1;
+    int listIndex = -1;
+    for (int i = 0; i < heapArray.size(); ++i) {
+        if (heapArray[i]->value == input) {
+            indexToDelete = i;
+            break;
+        }
+    }
+    if (indexToDelete == -1) {
+        std::cout << "Value not found in the heap." << std::endl;
+        return;
+    }
+
+    heapArray[indexToDelete]->visiting = true;
+    copyHeap();
+    heapArray[indexToDelete]->visiting = false;
+
+
+}
+
 void MinHeap::deleteElement(int value) {
     // Find the index of the element to delete
     int indexToDelete = -1;
@@ -427,6 +449,11 @@ void MinHeap::finalFile(std::vector<int>& input, int& stateIndex, bool& pause) {
     clearTree();
     for (auto i : input) insert(i);
     pause = false;
+}
+
+void MinHeap::finalInsert(int input, int& stateIndex, bool& pause) {
+    pause = true;
+    
 }
 
 /////////////////////////////////////
