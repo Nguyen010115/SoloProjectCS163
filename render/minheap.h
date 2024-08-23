@@ -86,6 +86,7 @@ public:
     bool MinHeap::isInteracting(int state);
     void MinHeap::finalFile(std::vector<int>& input, int& stateIndex, bool& pause);
     void MinHeap::finalInsert(int input, int& stateIndex, bool& pause);
+    void MinHeap::finalDelete(int value, int& stateIndex, bool& pause);
     void MinHeap::clearTree();
 
 private:

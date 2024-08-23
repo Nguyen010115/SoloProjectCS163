@@ -463,9 +463,20 @@ void MinHeap::finalInsert(int input, int& stateIndex, bool& pause) {
     steps.clear();
     stepsEdge.clear();
     copyHeap();
-    deleteElement(input);
+    insert(input);
     pause = false;
 
+}
+
+void MinHeap::finalDelete(int value, int& stateIndex, bool& pause) {
+    pause = true;
+    stateIndex = 0;
+
+    steps.clear();
+    stepsEdge.clear();
+    copyHeap();
+    deleteElement(value);
+    pause = false;
 }
 
 /////////////////////////////////////
