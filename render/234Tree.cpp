@@ -938,7 +938,11 @@ void render234Tree(Screen& currentScreen) {
 
         // Ensure slidingButton doesn't go out of bounds
         if (slidingButton.x < minX) slidingButton.x = minX;
-        if (slidingButton.x > maxX) slidingButton.x = maxX;
+        if (slidingButton.x > maxX) {
+            slidingButton.x = maxX;
+            stateIndex234 = testTree.getStepsSize() - 1;
+        }
+
 
         // Update the stateIndex based on the slidingButton's position
         if (testTree.getStepsSize() > 0) {
