@@ -4,14 +4,8 @@
 #include "constant.h"
 #include <math.h>
 #include <vector>
-#include <list>
-#include <utility>
-#include <time.h> 
 #include <queue>
 #include <string>
-#include <optional>
-#include <thread>
-#include <chrono>
 #include "file_select.h"
 #include <cstdlib>
 #include <unordered_map>

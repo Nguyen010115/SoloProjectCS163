@@ -15,21 +15,6 @@ struct MinHeapNode {
     void draw();
 };
 
-//struct EdgeHeap {
-//    int startIndex = -1;  // Start index in heapArray
-//    int endIndex = -1;    // End index in heapArray
-//    float alpha=1.0f;     // Transparency of the edge
-//
-//    EdgeHeap(int start =-1, int end=-1, float a = 1.0f)
-//        : startIndex(start), endIndex(end), alpha(a) {}
-//
-//    void draw(std::vector<MinHeapNode*>& heapArray) {
-//        Vector2 startPos = heapArray[startIndex]->position;
-//        Vector2 endPos = heapArray[endIndex]->position;
-//        DrawLineEx(startPos, endPos, 2.0f, Fade(BLACK, alpha));
-//        
-//    }
-//};
 
 struct EdgeHeap {
     Vector2 startPos;  // Start position of the edge
@@ -49,17 +34,7 @@ class MinHeap {
 public:
     MinHeap() {}
 
-    MinHeap::~MinHeap() {
-        for (MinHeapNode* node : nodeList) {
-            if (node) delete node;
-        }
-
-        for (auto& e : edges) if (e) delete e;
-
-        nodeList.clear();
-        heapArray.clear();
-        edges.clear();
-    }
+    ~MinHeap();
 
     void insert(int value);
     void bubbleUp(int index);
@@ -102,3 +77,14 @@ private:
     Vector2 calculateNodePosition(int index);
 };
 
+MinHeap::~MinHeap() {
+    for (MinHeapNode* node : nodeList) {
+        if (node) delete node;
+    }
+
+    for (auto& e : edges) if (e) delete e;
+
+    nodeList.clear();
+    heapArray.clear();
+    edges.clear();
+}
