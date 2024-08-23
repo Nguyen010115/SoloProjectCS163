@@ -647,18 +647,19 @@ int HeapnumCount = 0;
 bool HeapinputClick = false;
 bool HeaprandomClick = false;
 float HeaptimePassed = 0.0f;
-bool HeapgetFile = false;
+bool HeapGetFile = false;
 
-//void HeapFile(Interact& state) {
-//    if (!HeapgetFile) {
-//        std::string selectedFilePath = FileSelectDialog();
-//        std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
-//        min.clearHeap();
-//        testHeap = Heap();
-//        testHeap.finalFile(numbers, stateIndexHeap, pauseHeap);
-//        HeapgetFile = true;
-//    }
-//}
+void HeapFile(Interact& state) {
+    if (!HeapGetFile) {
+        std::string selectedFilePath = FileSelectDialog();
+        std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
+        minHeap.clearTree();
+        minHeap = MinHeap();
+        minHeap.finalFile(numbers, stateIndexHeap, pauseHeap);
+        HeapGetFile = true;
+    }
+}
+
 
 void HeapInsert(Interact& state) {
     DrawTexture(insertSection, hashtableOptions[1].x + 90.0f, hashtableOptions[1].y, WHITE);
