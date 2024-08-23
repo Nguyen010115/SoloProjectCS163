@@ -84,6 +84,9 @@ public:
     void MinHeap::updateState(int& stateIndex, float& elapsedTime, float deltaTime, float step);
     int MinHeap::getStepsSize();
     
+    void MinHeap::finalFile(std::vector<int>& input, int& stateIndex, bool& pause);
+    void MinHeap::clearTree();
+
 
 private:
     std::vector<MinHeapNode*> nodeList;    

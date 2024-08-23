@@ -374,6 +374,58 @@ int MinHeap::getStepsSize() {
     return steps.size();
 }
 
+void MinHeap::clearTree() {
+    for (MinHeapNode* node : nodeList) {
+        if (node) {
+            delete node;
+            node = nullptr;
+        }
+    }
+    nodeList.clear();
+    heapArray.clear();
+    for (std::vector<MinHeapNode*>& step : steps) {
+        for (MinHeapNode* node : step) {
+            if (node) {
+                delete node;
+                node = nullptr;
+            }
+        }
+        step.clear();
+    }
+    steps.clear();
+    for (std::vector<EdgeHeap*>& stepEdge : stepsEdge) {
+        for (EdgeHeap* edge : stepEdge) {
+            if (edge) {
+                delete edge;
+                edge = nullptr;
+            }
+        }
+        stepEdge.clear();
+    }
+    stepsEdge.clear();
+    for (MinHeapNode* node : curList) {
+        if (node) {
+            delete node;
+            node = nullptr;
+        }
+    }
+    curList.clear();
+    for (EdgeHeap* edge : curEdges) {
+        if (edge) {
+            delete edge;
+            edge = nullptr;
+        }
+    }
+    curEdges.clear();
+}
+
+void MinHeap::finalFile(std::vector<int>& input, int& stateIndex, bool& pause) {
+    pause = true;
+    stateIndex = 0;
+    clearTree();
+    for (auto i : input) insert(i);
+    pause = false;
+}
 
 /////////////////////////////////////
 
@@ -389,7 +441,7 @@ Interact heapCurInteract = REST;
 
 void initializeHeap() {
     for (int i = 10; i >= 1; i--) minHeap.insert(i);
-
+    minHeap.clearTree();
 }
 
 
@@ -532,3 +584,23 @@ bool HeaprandomClick = false;
 float HeaptimePassed = 0.0f;
 bool HeapgetFile = false;
 
+//void HeapFile(Interact& state) {
+//    if (!HeapgetFile) {
+//        std::string selectedFilePath = FileSelectDialog();
+//        std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
+//        min.clearHeap();
+//        testHeap = Heap();
+//        testHeap.finalFile(numbers, stateIndexHeap, pauseHeap);
+//        HeapgetFile = true;
+//    }
+//}
+
+void HeapInsert(Interact& state) { return; };
+
+void HeapDelete(Interact& state) { return; };
+
+void HeapSearch(Interact& state) { return; };
+
+void HeapCreate(Interact& state) { return; };
+
+void HeapFile(Interact& state) { return; };
