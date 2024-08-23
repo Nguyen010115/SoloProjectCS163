@@ -31,6 +31,7 @@ void MinHeapNode::draw() {
 }
 
 void MinHeap::insert(int value) {
+    //std::cout << value << std::endl;
     copyHeap();
     // Create a new node and add it to nodeList
     MinHeapNode* newNode = new MinHeapNode(value);
@@ -451,7 +452,6 @@ bool MinHeap::isInteracting(int state) {
 void MinHeap::finalFile(std::vector<int>& input, int& stateIndex, bool& pause) {
     pause = true;
     stateIndex = 0;
-    clearTree();
     for (auto i : input) insert(i);
     pause = false;
 }
@@ -517,8 +517,9 @@ bool heapCurInteracting = false;
 Interact heapCurInteract = REST;
 
 void initializeHeap() {
-    for (int i = 10; i >= 1; i--) minHeap.insert(i);
-    minHeap.clearTree();
+    //for (int i = 10; i >= 1; i--) minHeap.insert(i);
+    //minHeap.clearTree();
+ 
 }
 
 
@@ -581,7 +582,10 @@ void renderHeap(Screen& currentScreen) {
 
         // Ensure slidingButton doesn't go out of bounds
         if (slidingButton.x < minX) slidingButton.x = minX;
-        if (slidingButton.x > maxX) slidingButton.x = maxX;
+        if (slidingButton.x > maxX) {
+            slidingButton.x = maxX;
+            stateIndexHeap = minHeap.getStepsSize() - 1;
+        }
 
         // Update the stateIndex based on the slidingButton's position
         if (minHeap.getStepsSize() > 0) {
@@ -606,7 +610,7 @@ void renderHeap(Screen& currentScreen) {
     minHeap.draw();
 
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
     }
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
@@ -623,7 +627,7 @@ void renderHeap(Screen& currentScreen) {
             }
         }
     }
-    tree234Interacting(heapCurInteract);
+    HeapInteracting(heapCurInteract);
 }
 
 void HeapInteracting(Interact& state) {
@@ -663,8 +667,11 @@ bool HeapGetFile = false;
 
 void HeapFile(Interact& state) {
     if (!HeapGetFile) {
+
         std::string selectedFilePath = FileSelectDialog();
+
         std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
+
         minHeap.clearTree();
         minHeap = MinHeap();
         minHeap.finalFile(numbers, stateIndexHeap, pauseHeap);
@@ -724,7 +731,8 @@ void HeapInsert(Interact& state) {
 
     DrawText(HeapinputNumber, (int)inputSection.x + 7, (int)inputSection.y + 4, 20, DARKGREEN);
 
-    if ((checkClick(okInput) || IsKeyPressed(KEY_ENTER)) && !minHeap.isInteracting(stateIndexHeap)) {
+    if (checkClick(okInput) || IsKeyPressed(KEY_ENTER)) {
+        std::cout << HeapnumCount;
         if (HeapnumCount > 0) {
             int input = std::stoi(HeapinputNumber);
             minHeap.finalInsert(input, stateIndexHeap, pauseHeap);
@@ -735,7 +743,7 @@ void HeapInsert(Interact& state) {
         }
     }
 
-    if (checkClick(randomInsert) && !minHeap.isInteracting(stateIndexHeap)) {
+    if (checkClick(randomInsert)) {
         int number = rand() % 1000;
         if (number == 0) number++;
         std::string str = std::to_string(number);
@@ -827,9 +835,9 @@ void HeapSearch(Interact& state) {
 
         while (key > 0) {
             if ((key >= 48) && (key <= 57) && (HeapnumCount < 2)) {
-                HeapinputNumber[HeapNumCount] = (char)key;
-                HeapInputNumber[HeapNumCount + 1] = '\0';
-                HeapNumCount++;
+                HeapinputNumber[HeapnumCount] = (char)key;
+                HeapinputNumber[HeapnumCount + 1] = '\0';
+                HeapnumCount++;
             }
 
             key = GetCharPressed();
