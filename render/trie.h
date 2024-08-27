@@ -4,28 +4,27 @@
 struct TrieNode {
     std::unordered_map<char, TrieNode*> children;
     Vector2 position;
+    int index = -1;
     char ch;
-    float radius = 0.25f;
+    float radius = 25.0f;
     float alpha = 1.0f;
     bool visiting = false;
     bool isEndOfWord;
 
-    TrieNode(Vector2 pos = {0 ,0}, char ch = '0') : position(pos), ch(ch), isEndOfWord(false) {}
+    TrieNode(int ind = -1, Vector2 pos = {0 ,0}, char ch = '0') : index(ind), position(pos), ch(ch), isEndOfWord(false) {}
 
     void draw();
 };
 
 struct TrieEdge {
-    Vector2 startPos;  
-    Vector2 endPos;   
+    int startNode;
+    int endNode;
     float alpha;       
 
-   TrieEdge(Vector2 start = { 0,0 }, Vector2 end = { 0,0 }, float a = 1.0f)
-        : startPos(start), endPos(end), alpha(a) {}
+   TrieEdge(int s = -1, int e = -1, float a = 1.0f)
+        : startNode(s), endNode(e), alpha(a) {}
 
-    void draw() const {
-        DrawLineEx(startPos, endPos, 2.0f, Fade(BLACK, alpha));
-    }
+   void draw(std::vector<TrieNode*>& list);
 };
 
 class Trie {
@@ -34,25 +33,27 @@ public:
     ~Trie();
 
     void insert(const std::string& word);
-    bool search(const std::string& word) const;
+    bool search(const std::string& word);
     bool remove(const std::string& word);
     void updatePositions();
     void updateNodePosition(TrieNode* root, int level, float minX, float maxX, float levelSpacing);
     int countLeaves(TrieNode* node);
-    void copyTree();
-    void copyHeap2();
-    bool search(int input);
 
-    void mixedNode(TrieNode* target, TrieNode* start, TrieNode* end, float mixCoeff);
+    void updateEdges(TrieNode* node);
+    void updateEdgesHelper(TrieNode* node, std::vector<TrieEdge*>& edges);
+    void copyTree();
+
+    void mixNodes(TrieNode* target, TrieNode* start, TrieNode* end, float mixCoeff);
+    void mixEdge(TrieEdge& target, const TrieEdge* start, const TrieEdge* end, float mixCoeff);
     void updateState(int& stateIndex, float& elapsedTime, float deltaTime, float step);
     int getStepsSize();
 
     bool isInteracting(int state);
-    void finalFile(std::vector<int>& input, int& stateIndex, bool& pause);
-    void finalInsert(int input, int& stateIndex, bool& pause);
-    void finalDelete(int value, int& stateIndex, bool& pause);
-    bool finalSearch(int value, int& stateIndex, bool& pause);
-    void finalCreate(int value, int& stateIndex, bool& pause);
+    void finalInsert(const std::string& word, int& stateIndex, bool& pause);
+    void finalDelete(const std::string& word, int& stateIndex, bool& pause);
+    void finalCreate(int count, int& stateIndex, bool& pause);
+    void finalFile(const std::vector<std::string>& input, int& stateIndex, bool& pause);
+    bool finalSearch(const std::string& word, int& stateIndex, bool& pause);
     void clearTree();
     void draw();  
 
@@ -70,7 +71,9 @@ private:
 };
 
 Trie::Trie() {
-    root = new TrieNode({0,0}, '1');
+    root = new TrieNode(0,{683,120}, '1');
+    size++;
+    nodeList.push_back(root);
 }
 
 Trie::~Trie() {
