@@ -15,6 +15,8 @@ extern Texture2D menuBG;
 extern Texture2D hashtableBG;
 extern Texture2D avlBG;
 extern Texture2D tree234BG;
+extern Texture2D trieBG;
+
 extern Texture2D pauseButImg;
 extern Texture2D playButImg;
 extern Texture2D slidingBut;
@@ -108,6 +110,7 @@ Vector2 normalizeVector2(Vector2 v);
 
 Vector2 CalculateCenteredTextPosition(Vector2 texturePos, float textureWidth, float textureHeight, const char* text, int fontSize);
 
+bool checkEqual(Vector2 u, Vector2 v);
 //Button
 bool checkClick(Rectangle& button);
 
@@ -208,6 +211,8 @@ void TrieSearch(Interact& state);
 void TrieCreate(Interact& state);
 
 void TrieFile(Interact& state);
+
+std::string GenerateRandomString(int maxLength);
 
 //Graph
 

@@ -36,3 +36,7 @@ Vector2 normalizeVector2(Vector2 v) {
     float mag = magnitudeVector2(v);
     return mag != 0 ? Vector2{ v.x / mag, v.y / mag } : Vector2{ 0, 0 };
 }
+
+bool checkEqual(Vector2 u, Vector2 v) {
+    return (u.x == v.x && u.y == v.y);
+}

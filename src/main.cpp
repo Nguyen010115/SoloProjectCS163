@@ -20,12 +20,12 @@ int main() {
         ClearBackground(RAYWHITE);
         float dtime = GetFrameTime();
         etime += dtime;
-        if (etime < 5.0f) DrawTexture(loadingScreen, 0, 0, WHITE);
+        DrawTexture(loadingScreen, 0, 0, WHITE);
         if (!init) {
             initAll(currentScreen);
             init = true;
         }
-        if (etime > 5.0f) render(currentScreen);
+        render(currentScreen);
         EndDrawing();
     }
     unloadAll;
