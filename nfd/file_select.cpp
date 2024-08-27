@@ -54,3 +54,32 @@ std::vector<int> ReadNumbersFromFile(const std::string& filePath) {
 
     return numbers;
 }
+
+std::vector<std::string> ReadWordsFromFile(const std::string& filePath) {
+    std::ifstream file(filePath);
+    std::vector<std::string> words;
+
+    if (file.is_open()) {
+        std::string content;
+        std::getline(file, content);
+
+        // Replace commas with spaces
+        std::replace(content.begin(), content.end(), ',', ' ');
+
+        // Use a stringstream to parse the words
+        std::stringstream ss(content);
+        std::string word;
+        while (ss >> word) {
+            if (!word.empty()) {
+                words.push_back(word);
+            }
+        }
+
+        file.close();
+    }
+    else {
+        std::cerr << "Unable to open file: " << filePath << std::endl;
+    }
+
+    return words;
+}

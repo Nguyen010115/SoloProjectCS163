@@ -11,3 +11,4 @@
 
 std::string FileSelectDialog();
 std::vector<int> ReadNumbersFromFile(const std::string& filePath);
+std::vector<std::string> ReadWordsFromFile(const std::string& filePath);
