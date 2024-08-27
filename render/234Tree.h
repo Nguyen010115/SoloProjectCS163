@@ -126,6 +126,5 @@ private:
 
 
     std::vector<HoneycombNode*> curList;
-    std::vector<std::vector<Tree234Node*>> stepEdges;
     int size = 0;
 };

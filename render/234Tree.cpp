@@ -609,7 +609,7 @@ void Tree234::clearTree() {
     curList.clear();
     curEdges.clear();
     steps.clear();
-    stepEdges.clear();
+    stepsEdges.clear();
     size = 0;
 }
 
@@ -717,10 +717,6 @@ void Tree234::copyEdges() {
 
 
 
-// Update edges from a node
-void Tree234::updateEdgesFromNode(Tree234Node* node) {
-    // Implement recursive edge updating logic
-}
 
 bool Tree234::isInteracting(int state) {
     if (steps.size() == 0) return false;
@@ -928,6 +924,7 @@ int Tree234::getStepsSize() {
 Tree234 testTree;
 
 void initialize234Tree() {
+    //Example inputs
     for (int i = 1; i <= 10; i++) testTree.insert(i);
 }
 
