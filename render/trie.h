@@ -9,7 +9,7 @@ struct TrieNode {
     float radius = 25.0f;
     float alpha = 1.0f;
     bool visiting = false;
-    bool isEndOfWord;
+    bool isEndOfWord = false;
 
     TrieNode(int ind = -1, Vector2 pos = {0 ,0}, char ch = '0') : index(ind), position(pos), ch(ch), isEndOfWord(false) {}
 
@@ -77,13 +77,13 @@ Trie::Trie() {
 }
 
 Trie::~Trie() {
-    deleteNode(root);
+    clearTree();
 }
 
 void Trie::deleteNode(TrieNode* node) {
     if (node == nullptr) return;
-    for (auto& pair : node->children) {
-        deleteNode(pair.second);
+    for (auto pair : node->children) {
+        if (pair.second) deleteNode(pair.second);
     }
     delete node;
 }

@@ -17,7 +17,9 @@ void TrieNode::draw() {
     Color textColor = ColorAlpha(BLACK, alpha);
 
 
-    if (isEndOfWord) Color gradientEnd = ColorAlpha(BROWN, alpha);
+    if (isEndOfWord) {
+        gradientEnd = ColorAlpha(YELLOW, alpha);
+    }
 
 
     if (visiting) {
@@ -114,10 +116,13 @@ bool Trie::removeHelper(TrieNode* node, const std::string& word, int depth) {
     if (depth == word.size()) {
         // If this node is the end of the word, unmark it
         if (!node->isEndOfWord) {
+            node->visiting = false;
+
             return false;  // The word was not found
         }
 
         node->isEndOfWord = false;
+        node->visiting = false;
 
         // If the node has no children, it can be deleted
         return node->children.empty();
@@ -269,7 +274,7 @@ void Trie::mixNodes(TrieNode* target, TrieNode* start, TrieNode* end, float mixC
         target->ch = start->ch;
 
         // Maintain the end-of-word status
-        target->isEndOfWord = start->isEndOfWord;
+        target->isEndOfWord = end->isEndOfWord;
     }
     else if (start) {
         // Fading out effect for deleted nodes
@@ -421,7 +426,6 @@ void Trie::finalInsert(const std::string& word, int& stateIndex, bool& pause) {
 void Trie::finalCreate(int count, int& stateIndex, bool& pause) {
     pause = true;
     clearTree();
-    root = nullptr;
     stateIndex = 0;
     for (int i = 0; i < count; i++) {
         std::string s = GenerateRandomString(10);  // Generate a random string of up to 10 characters
@@ -433,7 +437,7 @@ void Trie::finalCreate(int count, int& stateIndex, bool& pause) {
 void Trie::finalFile(const std::vector<std::string>& input, int& stateIndex, bool& pause) {
     pause = true;
     stateIndex = 0;
-    clearTree();
+    
     for (const auto& word : input) {
         insert(word);
     }
@@ -489,13 +493,34 @@ bool Trie::finalSearch(const std::string& word, int& stateIndex, bool& pause) {
 }
 
 void Trie::clearTree() {
-    deleteNode(root);
-    root = new TrieNode(0, { 0, 0 }, '1');  // Reinitialize the root node
-    nodeList.clear();
+    for (auto node : curList) {
+        if (node) delete node;
+        node = NULL;
+    }
+    /*for (auto node : nodeList) {
+        if (node) delete node;
+        node = NULL;
+    }*/
+    for (auto node : curEdge) {
+        if (node) delete node;
+        node = NULL;
+    }
+    for (auto ve : steps) {
+        for (auto n : ve) {
+            if (n) delete n;
+            n = NULL;
+        }
+    }
+
+    steps.clear();
+    curEdge.clear();
     curList.clear();
+    nodeList.clear();
     steps.clear();
     stepsEdge.clear();
-    size = 0;
+    size = 1;
+    root  = new TrieNode(0, { 683,120 }, '1');
+    nodeList.push_back(root);
 }
 
 std::string GenerateRandomString(int maxLength) {
@@ -940,10 +965,7 @@ void TrieCreate(Interact& state) {
         if (trieCreateAmount > 0) {
             testTrie.clearTree();
             testTrie = Trie();
-            for (int i = 0; i < trieCreateAmount; i++) {
-                std::string randomStr = GenerateRandomString(10);
-                testTrie.finalInsert(randomStr, stateIndexTrie, pauseTrie);
-            }
+            testTrie.finalCreate(trieCreateAmount, stateIndexTrie, pauseTrie);
             trieCreateAmount = 0;
             trieCreateNumCount = 0;
             trieCreateInputNumber[0] = '\0';
