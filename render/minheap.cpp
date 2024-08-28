@@ -635,8 +635,14 @@ void renderHeap(Screen& currentScreen) {
     minHeap.draw();
 
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
         if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
+    }
+    if (checkClick(hashtableOptions[5])) {
+        stateIndexHeap = 0;
+        pauseHeap = true;
+        minHeap.clearTree();
+        minHeap = MinHeap();
     }
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
     if (checkCollision(heapTop)) DrawRectangleRec(heapTop, Color{ 0, 255, 0, 32 });
