@@ -60,8 +60,13 @@ std::vector<std::string> ReadWordsFromFile(const std::string& filePath) {
     std::vector<std::string> words;
 
     if (file.is_open()) {
+        std::string line;
         std::string content;
-        std::getline(file, content);
+
+        // Read the entire file, line by line
+        while (std::getline(file, line)) {
+            content += line + " "; // Add a space after each line to separate words
+        }
 
         // Replace commas with spaces
         std::replace(content.begin(), content.end(), ',', ' ');
