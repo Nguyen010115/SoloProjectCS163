@@ -347,7 +347,7 @@ void MinHeap::updateState(int& stateIndex, float& elapsedTime, float deltaTime, 
     if (stateIndex < 0 || stateIndex >= steps.size() - 1) return; // Ensure stateIndex is within valid range
     elapsedTime += deltaTime;
     float G = elapsedTime / step;  // Assuming transition over 1 second
-    if (G > step) G = step;
+    if (G > 1.0f) G = 1.0f;
 
     const std::vector<MinHeapNode*>& startCombList = steps[stateIndex];
     const std::vector<MinHeapNode*>& endCombList = steps[stateIndex + 1];
@@ -389,7 +389,7 @@ void MinHeap::updateState(int& stateIndex, float& elapsedTime, float deltaTime, 
         }
         curEdges[i] = mixedEdge;
     }
-    if (G >= step) {
+    if (G >= 1.0f) {
         stateIndex++;  // Move to the next state
         elapsedTime = 0.0f;  // Reset the elapsed time
     }
@@ -516,6 +516,10 @@ void MinHeap::getTop(int& stateIndex, bool& pause) {
     pause = false;
 }
 
+int MinHeap::getSize() {
+    return heapArray.size();
+}
+
 /////////////////////////////////////
 
 MinHeap minHeap;
@@ -526,6 +530,7 @@ int stateIndexHeap = 0;
 bool pauseHeap = false;
 bool isDraggingHeap = false;
 bool heapCurInteracting = false;
+bool doubleSpeedHeap = false;
 Interact heapCurInteract = REST;
 
 void initializeHeap() {
@@ -536,6 +541,16 @@ void initializeHeap() {
 void renderHeap(Screen& currentScreen) {
     DrawTexture(heapBG, 0, 0, WHITE);
     deltaTimeHeap = GetFrameTime();
+
+    if (checkClick(changeSpeed)) doubleSpeedHeap = !doubleSpeedHeap;
+    if (!doubleSpeedHeap) {
+        stepHeap= 1.0f;
+        DrawTexture(speed1x, changeSpeed.x, changeSpeed.y, WHITE);
+    }
+    else {
+        stepHeap = 0.5f;
+        DrawTexture(speed2x, changeSpeed.x, changeSpeed.y, WHITE);
+    }
 
     if (!pauseHeap) DrawTexture(pauseButImg, pauseButton.x, pauseButton.y, WHITE);
     else DrawTexture(playButImg, pauseButton.x, pauseButton.y, WHITE);
@@ -625,7 +640,7 @@ void renderHeap(Screen& currentScreen) {
     }
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
     if (checkCollision(heapTop)) DrawRectangleRec(heapTop, Color{ 0, 255, 0, 32 });
-    if (checkClick(heapTop)) minHeap.getTop(stateIndexHeap,  pauseHeap);
+    if (!minHeap.isInteracting(stateIndexHeap)) if (checkClick(heapTop)) minHeap.getTop(stateIndexHeap,  pauseHeap);
     if (checkClick(returnBar) || checkClick(returnButton)) currentScreen = MENU;
     for (int i = 0; i < 5; i++) {
         if (checkClick(hashtableOptions[i])) {
@@ -639,6 +654,16 @@ void renderHeap(Screen& currentScreen) {
             }
         }
     }
+
+    int size = minHeap.getSize();
+    int fontSize = 25;
+    float textWidth = MeasureText(TextFormat("%d", size), fontSize); // Get the width of the text
+    float textPosX = heapSize.x + heapSize.width * 3 / 4 - textWidth / 2; // Center in the right half
+    float textPosY = heapSize.y + heapSize.height / 2 - fontSize / 2; // Center vertically
+
+    // Draw the text
+    //DrawText(TextFormat("%d", size), textPosX, textPosY, fontSize, WHITE);
+    DrawTextEx(font, TextFormat("%d", size), { textPosX-10, textPosY}, fontSize, 1, WHITE);
     
     HeapInteracting(heapCurInteract);
 }

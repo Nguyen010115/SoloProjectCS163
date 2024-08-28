@@ -73,6 +73,7 @@ extern Rectangle slidingButton;
 
 extern Rectangle changeSpeed;
 extern Rectangle heapTop;
+extern Rectangle heapSize;
 
 constexpr const Color graphColour[5] = { MAGENTA, MAROON, DARKBLUE, DARKBROWN, DARKGRAY };
 constexpr float minX = 200.0f;

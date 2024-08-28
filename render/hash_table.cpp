@@ -377,7 +377,7 @@ Rectangle random1Section;
 Rectangle ok1random;
 Rectangle randomCreate;
 Rectangle heapTop;
-
+Rectangle heapSize;
 
 
 
@@ -431,7 +431,7 @@ void initializeHash() {
     setupButtonScale(slidingButton, 1123.9f, 984.6f, 55.0f, 48.0f);
     setupButtonScale(changeSpeed, 1801.4f, 964.8f, 80.0f, 80.0f);
     setupButtonScale(heapTop, 399.3f, 1004.8f, 110.3f, 51.8f);
-
+    setupButtonScale(heapSize, 536.4f, 1005.4f, 151.3f, 51.8f);
 };
 
  bool check = false;
