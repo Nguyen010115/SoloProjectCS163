@@ -38,6 +38,27 @@ void GraphNode::draw() {
     DrawText(balanceStr.c_str(), balancePos.x, balancePos.y, balanceFontSize, textColor);
 }
 
+void GraphNode::update(const Vector2& mousePosition, bool isMouseDown, bool isMouseUp) {
+    // Check if the mouse is down and within the node's radius
+    if (isMouseDown) {
+        float distance = Vector2Distance(mousePosition, position);
+        if (distance <= radius) {
+            isDragging = true;
+        }
+    }
+
+    // Update the position if the node is being dragged
+    if (isDragging) {
+        position = mousePosition;
+    }
+
+    // Stop dragging when the mouse button is released
+    if (isMouseUp) {
+        isDragging = false; // Stop dragging
+    }
+}
+
+
 void GraphEdge::draw(std::vector<GraphNode*>& nodeList) {
     Vector2 start = nodeList[startIndex]->position;
     Vector2 end = nodeList[endIndex]->position;
@@ -243,7 +264,7 @@ void Graph::copyList() {
         GraphNode* newNode = new GraphNode(node->ind, node->value, node->position);
         newNode->colour = node->colour;
         newNode->visiting = node->visiting;
-        newNode->clicking = node->clicking;
+        newNode->isDragging = node->isDragging;
         newNode->alpha = node->alpha;
         curList.push_back(newNode);
     }
@@ -385,8 +406,19 @@ void Graph::applyForceDirectedLayout(int iterations, float areaWidth, float area
     copyList();
 }
 
+void Graph::dragNodes() {
+    Vector2 mousePosition = GetMousePosition();
+    bool isMouseDown = IsMouseButtonDown(MOUSE_LEFT_BUTTON);
+    bool isMouseUp = IsMouseButtonReleased(MOUSE_LEFT_BUTTON);
 
+    // Update the node based on mouse input
+    for (auto node : curList) if (node) node->update(mousePosition, isMouseDown, isMouseUp);
+}
 
+bool Graph::isInteracting(int s) {
+    if (steps.size() == 0) return false;
+    else return (s < steps.size() - 1);
+}
 ///////////////////////////////////////////////////////////////////////////////////
 
 Graph graph;
@@ -431,7 +463,8 @@ void renderGraph(Screen& currentScreen) {
     DrawTexture(avlBG, 0, 0, WHITE);
     deltaTimeGraph = GetFrameTime();
 
-    graph.applyForceDirectedLayout();
+    //graph.applyForceDirectedLayout();
+    if (!graph.isInteracting(stateIndexGraph) && pauseGraph) graph.dragNodes();
 
     if (!pauseGraph) DrawTexture(pauseButImg, pauseButton.x, pauseButton.y, WHITE);
     else DrawTexture(playButImg, pauseButton.x, pauseButton.y, WHITE);

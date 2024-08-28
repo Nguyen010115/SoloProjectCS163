@@ -6,7 +6,7 @@ struct GraphNode {
 	int ind = -1;
 	Vector2 position;
 	bool visiting = false;
-	bool clicking = false;
+	bool isDragging = false;
 	float radius = 25.0f;
 	float alpha = 1.0f;
 	int colour = 0;
@@ -15,7 +15,7 @@ struct GraphNode {
 		ind(index), value(val), position(pos) {}
 
 	void draw();
-
+	void update(const Vector2& mousePosition, bool isMouseDown, bool isMouseUp);
 };
 
 
@@ -58,6 +58,7 @@ public:
 	int minKey(std::vector<int>& key, std::vector<bool>& mstSet);
 	void prim();
 
+	void dragNodes();
 
 	void mixedNode(GraphNode* target, GraphNode* start, GraphNode* end, float mixCoeff);
 	bool isInteracting(int state);
