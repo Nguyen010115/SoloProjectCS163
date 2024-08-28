@@ -386,7 +386,7 @@ Rectangle heapSize;
  Rectangle TrieDeleteOK;
  Rectangle TrieSearchBox;
  Rectangle TrieSearchOk;
-
+ Rectangle ccGraph;
 
 
 extern HashTable hashTable(12);
@@ -451,6 +451,8 @@ void initializeHash() {
 
     setupButtonScale(TrieSearchBox, 187.3f, 1011.5f, 212.3f, 38.5f);
     setupButtonScale(TrieSearchOk, 420.6f, 1011.4f, 36.6f, 36.6f);
+    setupButtonScale(ccGraph, 34.7f, 1005.4f, 321.6f, 51.8f);
+
 
 };
 

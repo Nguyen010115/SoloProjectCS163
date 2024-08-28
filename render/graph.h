@@ -59,7 +59,7 @@ public:
 	void prim();
 
 	void dragNodes();
-
+	void Graph::initializeFromMatrix(const std::vector<std::vector<int>>& adjacencyMatrix);
 	void mixedNode(GraphNode* target, GraphNode* start, GraphNode* end, float mixCoeff);
 	bool isInteracting(int state);
 	void finalFile(std::vector<int>& input, int& stateIndex, bool& pause);
@@ -68,9 +68,9 @@ public:
 	bool finalSearch(int value, int& stateIndex, bool& pause);
 	void finalCreate(int value, int& stateIndex, bool& pause);
 	void finalMSTPrim(int& stateIndex, bool& pause);
-	void finalConnectedComponents(int& stateIndex, bool& pause);
+	int finalConnectedComponents(int& stateIndex, bool& pause);
 	void clearGraph();
-
+	void Graph::clearColour();
 
 private:
 	int V = 0;

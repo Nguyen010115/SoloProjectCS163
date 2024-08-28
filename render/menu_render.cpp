@@ -8,6 +8,7 @@ Texture2D avlBG;
 Texture2D tree234BG;
 Texture2D trieBG;
 Texture2D heapBG;
+Texture2D graphBG;
 
 Texture2D pauseButImg;
 Texture2D playButImg;
@@ -44,6 +45,8 @@ void initImages() {
     tree234BG = LoadTexture("resources/images/234_BG.png");
     trieBG = LoadTexture("resources/images/trie_BG.png");
     heapBG = LoadTexture("resources/images/heap_BG.png");
+    graphBG = LoadTexture("resources/images/graph_BG.png");
+
 
     honeycomb = LoadTexture("resources/images/honeycomb.png");
     honeydrop = LoadTexture("resources/images/honeydrop.png");
@@ -70,6 +73,7 @@ void unloadAll() {
     UnloadTexture(tree234BG);
     UnloadTexture(trieBG);
     UnloadTexture(heapBG);
+    UnloadTexture(graphBG);
 
     UnloadTexture(honeycomb);
     UnloadTexture(honeydrop);

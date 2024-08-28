@@ -31,17 +31,17 @@ std::vector<int> ReadNumbersFromFile(const std::string& filePath) {
     std::vector<int> numbers;
 
     if (file.is_open()) {
-        std::string content;
-        std::getline(file, content);
+        std::string line;
 
-        // Replace commas with spaces
-        std::replace(content.begin(), content.end(), ',', ' ');
+        // Read the file line by line
+        while (std::getline(file, line)) {
+            // Replace commas with spaces (if necessary)
+            std::replace(line.begin(), line.end(), ',', ' ');
 
-        // Use a stringstream to parse the numbers
-        std::stringstream ss(content);
-        int number;
-        while (ss >> number) {
-            if (number > 0) {
+            // Use a stringstream to parse the numbers in the current line
+            std::stringstream ss(line);
+            int number;
+            while (ss >> number) {
                 numbers.push_back(number);
             }
         }

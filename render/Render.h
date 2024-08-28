@@ -17,6 +17,8 @@ extern Texture2D avlBG;
 extern Texture2D tree234BG;
 extern Texture2D trieBG;
 extern Texture2D heapBG;
+extern Texture2D graphBG;
+
 
 extern Texture2D pauseButImg;
 extern Texture2D playButImg;
@@ -85,6 +87,8 @@ extern Rectangle TrieDeleteBox;
 extern Rectangle TrieDeleteOK;
 extern Rectangle TrieSearchBox;
 extern Rectangle TrieSearchOk;
+extern Rectangle ccGraph;
+
 
 constexpr const Color graphColour[5] = { MAGENTA, MAROON, DARKBLUE, DARKBROWN, DARKGRAY };
 constexpr float minX = 200.0f;
@@ -240,7 +244,9 @@ void initializeGraph();
 
 void renderGraph(Screen& currentScreen);
 
-void GraphCreate(Interact& state);
+void graphInteractingFunction(Interact& graphCurInteract);
+
+void GraphClear(Interact& state);
 
 void GraphFile(Interact& state);
 

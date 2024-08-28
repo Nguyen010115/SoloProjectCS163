@@ -75,8 +75,9 @@ void GraphEdge::draw(std::vector<GraphNode*>& nodeList) {
 
     // Draw weight of the edge in the middle of the edge line
     Vector2 midPoint = { (start.x + end.x) / 2, (start.y + end.y) / 2 };
+    DrawCircleGradient(midPoint.x, midPoint.y, 10.0f, WHITE, WHITE);
     std::string weightStr = std::to_string(weight);
-    DrawText(weightStr.c_str(), midPoint.x - MeasureText(weightStr.c_str(), 15) / 2, midPoint.y - 15 / 2, 15, BLACK);
+    DrawText(weightStr.c_str(), midPoint.x - MeasureText(weightStr.c_str(), 15) / 2, midPoint.y - 15 / 2, 15, GOLD);
 }
 
 
@@ -104,7 +105,7 @@ void Graph::addNode(int val) {
 
     // Increment the number of vertices
     V++;
-    std::cout << Mat.size() << " " << Mat[0].size() << std::endl;
+    //std::cout << Mat.size() << " " << Mat[0].size() << std::endl;
     if (V == 6) std::cout << Mat[0][1] << std::endl;
 }
 
@@ -163,8 +164,33 @@ bool Graph::isConnected() {
 
 }
 
+void Graph::initializeFromMatrix(const std::vector<std::vector<int>>& adjacencyMatrix) {
+    clearGraph(); // Clear any existing graph data
+
+    int matrixSize = adjacencyMatrix.size();
+
+    // Add nodes
+    for (int i = 0; i < matrixSize; ++i) {
+        addNode(); // Adds a node with a default value
+    }
+
+    // Add edges based on the adjacency matrix
+    for (int i = 0; i < matrixSize; ++i) {
+        for (int j = 0; j < matrixSize; ++j) {
+            if (adjacencyMatrix[i][j] > 0) {
+                addEdge(i, j, adjacencyMatrix[i][j]); // Adds an edge with the given weight
+            }
+        }
+    }
+
+    // Update the edges to reflect the new graph structure
+    updateEdges();
+}
+
+
+
 int Graph::minKey(std::vector<int>& key, std::vector<bool>& mstSet) {
-    int min = INT_MAX, min_index;
+    int min = INT_MAX, min_index = -1;
     for (int v = 0; v < V; v++) {
         if (!mstSet[v] && key[v] < min) {
             min = key[v];
@@ -185,11 +211,15 @@ void Graph::prim() {
     key[0] = 0;
     parent[0] = -1;
 
-    for (int count = 0; count < V - 1; count++) {
+    for (int count = 0; count < V; count++) {
         int u = minKey(key, mstSet);
+        if (u == -1) continue;
         mstSet[u] = true;
         nodeList[u]->colour = 1;
-        if (parent[u] > 0) ColourMat[parent[u]][u] = 1;
+        if (parent[u] >= 0) {
+            ColourMat[parent[u]][u] = 1;
+            ColourMat[u][parent[u]] = 1;
+        }
         copyList();
         for (int v = 0; v < V; v++) {
             if (Mat[u][v] && !mstSet[v] && Mat[u][v] < key[v]) {
@@ -199,10 +229,20 @@ void Graph::prim() {
         }
     }
 
+    copyList();
     /*printf("Edges in MST:\n");
     for (int i = 1; i < V; i++) {
         printf("%d - %d: %d\n", parent[i], i, Mat[i][parent[i]]);
     }*/
+}
+
+void Graph::clearColour() {
+    for (auto node : nodeList) node->colour = 0;
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            ColourMat[i][j] = 0;
+        }
+    }
 }
 
 int Graph::connectedComp() {
@@ -216,7 +256,7 @@ int Graph::connectedComp() {
             dfs(u, componentIndex, visited);
         }
     }
-
+    copyList();
     return componentIndex; 
 }
 
@@ -246,6 +286,33 @@ void Graph::updateEdges() {
     }
     //std::cout << "Update edges: " << edgeList.size() << std::endl;
 
+}
+
+void Graph::clearGraph() {
+    // Delete all dynamically allocated nodes
+    for (auto node : nodeList) {
+        delete node;
+    }
+    nodeList.clear(); // Clear the list of nodes
+
+    // Delete all dynamically allocated edges
+    for (auto edge : edgeList) {
+        delete edge;
+    }
+    edgeList.clear(); // Clear the list of edges
+
+    // Clear the adjacency matrices
+    Mat.clear();
+    ColourMat.clear();
+
+    // Clear other data structures
+    curList.clear();
+    steps.clear();
+    curEdge.clear();
+    stepsEdge.clear();
+
+    // Reset the number of vertices
+    V = 0;
 }
 
 
@@ -291,9 +358,11 @@ int Graph::getStepsSize() {
 void Graph::updateState(float deltaTime, float& elapsedTime, int& stateIndex, float step) {
     if (stateIndex < 0 || stateIndex >= steps.size() - 1) return;
 
+    if (steps.size() == 0) return;
+
     elapsedTime += deltaTime;
     float G = elapsedTime / step;
-    if (G > step) G = step;
+    if (G > 1.0f) G = 1.0f;
 
     const std::vector<GraphNode*>& startList = steps[stateIndex];
     const std::vector<GraphNode*>& endList = steps[stateIndex + 1];
@@ -335,7 +404,7 @@ void Graph::updateState(float deltaTime, float& elapsedTime, int& stateIndex, fl
         curEdge.push_back(mixedEdge);
     }
 
-    if (G >= step) {
+    if (G >= 1.0f) {
         stateIndex++;
         elapsedTime = 0.0f;
     }
@@ -413,25 +482,52 @@ void Graph::dragNodes() {
 
     // Update the node based on mouse input
     for (auto node : curList) if (node) node->update(mousePosition, isMouseDown, isMouseUp);
+    for (auto node : nodeList) if (node) node->update(mousePosition, isMouseDown, isMouseUp);
+
 }
 
 bool Graph::isInteracting(int s) {
     if (steps.size() == 0) return false;
     else return (s < steps.size() - 1);
 }
+
+void Graph::finalMSTPrim(int& stateIndex, bool& pause) {
+    pause = true;
+    stateIndex = 0;
+    curList.clear();
+    curEdge.clear();
+    steps.clear();
+    stepsEdge.clear();
+    prim();
+    copyList();
+    pause = false;
+}
+
+int Graph::finalConnectedComponents(int& stateIndex, bool& pause) {
+    pause = true;
+    stateIndex = 0;
+    curList.clear();
+    curEdge.clear();
+    steps.clear();
+    stepsEdge.clear();
+    int res = connectedComp();
+    pause = false;
+    return res;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 Graph graph;
 
 void initializeGraph() {
     for (int i = 0; i < 7; i++) graph.addNode();
-    std::cout << "Check 1." << std::endl;
     graph.addEdge(0, 1, 1);
     graph.addEdge(1, 2, 8);
     graph.addEdge(2, 0, 7);
 
     // Component 2: Nodes 3, 4
-    graph.addEdge(3, 4, 9);
+    //graph.addEdge(3, 4, 9);
     graph.addEdge(2, 3, 5);
     // Component 3: Nodes 5, 6
     graph.addEdge(5, 6, 51);
@@ -439,16 +535,7 @@ void initializeGraph() {
     // Additional edges to complete the 3 connected components
     graph.addEdge(0, 2, 1); // Another connection in Component 1
     graph.addEdge(3, 3, 3); // Self-loop in Component 2 for variety
-
-    // Now, you have 3 connected components: {0,1,2}, {3,4}, {5,6}
-    /*std::cout << "Check 2." << std::endl;
-    for (int i = 0; i < 4; i++) graph.addNode();*/
-
-
-    std::cout << "Check 3." << std::endl;
-    //graph.connectedComp();  // Find and color the connected components
     graph.prim();
-    graph.copyList();
 }
 
 float stepGraph = 1.0f;
@@ -458,13 +545,26 @@ int stateIndexGraph = 0;
 bool pauseGraph = false;
 bool isDraggingGraph = false;
 bool getFileGraph = false;
+bool doubleSpeedGraph = false;
+bool graphInteracting = false;
+Interact graphCurInteract = REST;
+int size = 0;
 
 void renderGraph(Screen& currentScreen) {
-    DrawTexture(avlBG, 0, 0, WHITE);
+    DrawTexture(graphBG, 0, 0, WHITE);
     deltaTimeGraph = GetFrameTime();
 
-    //graph.applyForceDirectedLayout();
-    if (!graph.isInteracting(stateIndexGraph) && pauseGraph) graph.dragNodes();
+    if (checkClick(changeSpeed)) doubleSpeedGraph = !doubleSpeedGraph;
+    if (!doubleSpeedGraph) {
+        stepGraph = 1.0f;
+        DrawTexture(speed1x, changeSpeed.x, changeSpeed.y, WHITE);
+    }
+    else {
+        stepGraph = 0.5f;
+        DrawTexture(speed2x, changeSpeed.x, changeSpeed.y, WHITE);
+    }
+
+    if (!graph.isInteracting(stateIndexGraph)) graph.dragNodes();
 
     if (!pauseGraph) DrawTexture(pauseButImg, pauseButton.x, pauseButton.y, WHITE);
     else DrawTexture(playButImg, pauseButton.x, pauseButton.y, WHITE);
@@ -474,14 +574,13 @@ void renderGraph(Screen& currentScreen) {
     }
 
     if (checkCollision(pauseButton)) DrawRectangleRec(pauseButton, Color{ 0, 255, 0, 32 });
-    //if (checkCollision(forWard)) DrawRectangleRec(forWard, Color{ 0, 255, 0, 32 });
-    //if (checkCollision(backWard)) DrawRectangleRec(backWard, Color{ 0, 255, 0, 32 });
+
 
     if (checkClick(backWard)) {
         pauseGraph = true;
         if (stateIndexGraph > 0) {
             stateIndexGraph--;
-            elapsedTimeGraph = 0.9f;
+            elapsedTimeGraph = 0.8f*stepGraph;
             graph.updateState(deltaTimeGraph, elapsedTimeGraph, stateIndexGraph, stepGraph);
         }
     }
@@ -490,7 +589,7 @@ void renderGraph(Screen& currentScreen) {
         pauseGraph = true;
         if (stateIndexGraph < (graph.getStepsSize() - 2)) {
             stateIndexGraph++;
-            elapsedTimeGraph = 0.9f;
+            elapsedTimeGraph = 0.8f*stepGraph;
             graph.updateState(deltaTimeGraph, elapsedTimeGraph, stateIndexGraph, stepGraph);
         }
     }
@@ -549,9 +648,121 @@ void renderGraph(Screen& currentScreen) {
 
     graph.draw();
 
-    for (int i = 0; i < 5; i++) {
+    int fontSize = 25;
+    float textWidth = MeasureText(TextFormat("%d", size), fontSize);
+    float textPosX = ccGraph.x + ccGraph.width * 3 / 4 - textWidth / 2+ 42.0f;
+    float textPosY = ccGraph.y + ccGraph.height / 2 - fontSize / 2;
+    DrawTextEx(font, TextFormat("%d", size), { textPosX - 10, textPosY }, fontSize, 1, WHITE);
+    for (int i = 0; i < 3; i++) {
         if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
     }
+    if (checkCollision(ccGraph)) DrawRectangleRec(ccGraph, Color{ 0, 255, 0, 32 });
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
     if (checkClick(returnBar) || checkClick(returnButton)) currentScreen = MENU;
+
+
+    for (int i = 0; i < 3; i++) {
+        if (checkClick(hashtableOptions[i])) {
+            if (!graphInteracting) {
+
+                graphCurInteract = constants::hashInter[i];
+                graphInteracting = true;
+            }
+            else {
+                graphInteracting = false;
+                graphCurInteract = REST;
+            }
+        }
+    }
+    if (checkClick(ccGraph)) {
+        if (!graphInteracting) {
+            graphCurInteract = constants::hashInter[3];
+           
+            graphInteracting = true;
+        }
+        else {
+            graphInteracting = false;
+            graphCurInteract = REST;
+        }
+    }
+    graphInteractingFunction(graphCurInteract);
 }
+
+void graphInteractingFunction(Interact& state) {
+    switch (state)
+    {
+    case CREATE:
+    {
+        GraphClear(state);
+    } break;
+    case INSERT:
+    {
+        GraphFile(state);
+    } break;
+    case DELETE:
+    {
+        GraphMSTPrim(state);
+    } break;
+    case SEARCH:
+    {
+        GraphConnectedComponents(state);
+    } break;
+
+    default: break;
+    }
+};
+
+void GraphClear(Interact& state) {
+    graph.clearGraph();
+    graph = Graph();
+    state = REST;
+}
+
+void GraphFile(Interact& state) {
+    std::string selectedFilePath = FileSelectDialog();
+    std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
+    if (numbers.size() == 0) {
+        state = REST;
+        return;
+    }
+
+    int N = numbers[0], ind = 1;
+
+    std::vector<std::vector<int>> adjacencyMatrix(N, std::vector<int>(N, 0));
+
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            if (ind < numbers.size()-1) {
+                adjacencyMatrix[i][j] = numbers[ind];
+                ind++;
+            }
+        }
+    }
+
+    graph.clearGraph();
+    graph = Graph();
+
+    graph.initializeFromMatrix(adjacencyMatrix);
+
+    graph.copyList();
+    graph.copyList();
+
+    state = REST;
+
+}
+
+void GraphMSTPrim(Interact& state) {
+    graph.clearColour();
+    graph.finalMSTPrim(stateIndexGraph, pauseGraph);
+    state = REST;
+}
+
+void GraphConnectedComponents(Interact& state) {
+    graph.clearColour();
+
+    size = graph.finalConnectedComponents(stateIndexGraph, pauseGraph);
+    state = REST;
+}
+
+
+
