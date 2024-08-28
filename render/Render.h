@@ -44,7 +44,7 @@ extern Color darkGreen;
 //Components
 
 
-extern Rectangle hashtableOptions[5];
+extern Rectangle hashtableOptions[6];
 extern Rectangle returnBar;
 extern Rectangle returnButton;
 extern Rectangle randomInsert;

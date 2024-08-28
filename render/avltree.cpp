@@ -731,6 +731,14 @@ bool doubleSpeed = false;
 void renderAVLtree(Screen& currentScreen) {
 	DrawTexture(avlBG, 0, 0, WHITE);
     deltaTime = GetFrameTime();
+
+    if (checkClick(hashtableOptions[5])) {
+        stateIndex = 0;
+        pause = true;
+        avl.clearTree();
+        avl = avlTree();
+    }
+
     if (checkClick(changeSpeed)) doubleSpeed = !doubleSpeed;
     if (!doubleSpeed) {
         stepTime = 1.0f;
@@ -820,7 +828,7 @@ void renderAVLtree(Screen& currentScreen) {
 
     avl.draw();
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
         if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
     }
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
