@@ -15,7 +15,7 @@ struct GraphNode {
 		ind(index), value(val), position(pos) {}
 
 	void draw();
-	void update(const Vector2& mousePosition, bool isMouseDown, bool isMouseUp);
+	void GraphNode::update(const Vector2& mousePosition, bool isMouseDown, bool isMouseUp, const std::vector<GraphNode*>& nodeList);
 };
 
 

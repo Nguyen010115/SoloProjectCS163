@@ -47,3 +47,7 @@ float Vector2Distance(const Vector2& v1, const Vector2& v2) {
 
     return std::sqrt(dx * dx + dy * dy);
 }
+
+Vector2 Vector2Scale(const Vector2& v, float scalar) {
+    return { v.x * scalar, v.y * scalar };
+}

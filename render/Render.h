@@ -90,7 +90,7 @@ extern Rectangle TrieSearchOk;
 extern Rectangle ccGraph;
 
 
-constexpr const Color graphColour[5] = { MAGENTA, MAROON, DARKBLUE, DARKBROWN, DARKGRAY };
+constexpr const Color graphColour[7] = { YELLOW, MAROON, DARKBLUE, DARKBROWN, MAGENTA, DARKGREEN, GRAY};
 constexpr float minX = 200.0f;
 constexpr float maxX = 1300.0f;
 constexpr float minY = 200.0f;
@@ -125,6 +125,8 @@ Vector2 divideVector2(Vector2 v, float scalar);
 float magnitudeVector2(Vector2 v);
 
 Vector2 normalizeVector2(Vector2 v);
+
+Vector2 Vector2Scale(const Vector2& v, float scalar);
 
 Vector2 CalculateCenteredTextPosition(Vector2 texturePos, float textureWidth, float textureHeight, const char* text, int fontSize);
 
@@ -253,3 +255,7 @@ void GraphFile(Interact& state);
 void GraphMSTPrim(Interact& state);
 
 void GraphConnectedComponents(Interact& state);
+
+void GraphRandom(Interact& state);
+
+std::vector<std::vector<int>> generateRandomAdjacencyMatrix(int numNodes, int minValue, int maxValue, float density = 0.3f, bool allowSelfLoops = false);

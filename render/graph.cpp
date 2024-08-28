@@ -9,8 +9,8 @@ void GraphNode::draw() {
     Color outlineColor = ColorAlpha(ORANGE, alpha);
     Color textColor = ColorAlpha(BLACK, alpha);
 
-    if (colour > 0 && colour < 16) {
-        Color temp = graphColour[colour];
+    if (colour > 0) {
+        Color temp = graphColour[colour%7];
         outlineColor = ColorAlpha(temp, alpha);
         gradientEnd = ColorAlpha(temp, alpha);
         //outlineColor = ColorAlpha(temp, alpha);
@@ -38,25 +38,39 @@ void GraphNode::draw() {
     DrawText(balanceStr.c_str(), balancePos.x, balancePos.y, balanceFontSize, textColor);
 }
 
-void GraphNode::update(const Vector2& mousePosition, bool isMouseDown, bool isMouseUp) {
-    // Check if the mouse is down and within the node's radius
+void GraphNode::update(const Vector2& mousePosition, bool isMouseDown, bool isMouseUp, const std::vector<GraphNode*>& nodeList) {
     if (isMouseDown) {
         float distance = Vector2Distance(mousePosition, position);
-        if (distance <= radius) {
+        if (distance <= radius-5.0f) {
             isDragging = true;
         }
     }
 
-    // Update the position if the node is being dragged
     if (isDragging) {
-        position = mousePosition;
+        bool canMove = true;
+        Vector2 newPosition = mousePosition;
+
+        // Check if the new position would cause an overlap
+        for (const auto& otherNode : nodeList) {
+            if (otherNode != this) {
+                float distanceToOther = Vector2Distance(newPosition, otherNode->position);
+                if (distanceToOther < radius + otherNode->radius) {
+                    canMove = false;
+                    break;
+                }
+            }
+        }
+
+        if (canMove) {
+            position = newPosition;
+        }
     }
 
-    // Stop dragging when the mouse button is released
     if (isMouseUp) {
-        isDragging = false; // Stop dragging
+        isDragging = false;
     }
 }
+
 
 
 void GraphEdge::draw(std::vector<GraphNode*>& nodeList) {
@@ -65,8 +79,8 @@ void GraphEdge::draw(std::vector<GraphNode*>& nodeList) {
     if (start.x == 0 || end.x == 0) return;
     Color edgeColor = BLACK;
 
-    if (colour > 0 && colour < 16) {
-        Color temp = graphColour[colour];
+    if (colour > 0) {
+        Color temp = graphColour[colour%7];
 
         edgeColor = ColorAlpha(temp, alpha);
     }
@@ -106,7 +120,6 @@ void Graph::addNode(int val) {
     // Increment the number of vertices
     V++;
     //std::cout << Mat.size() << " " << Mat[0].size() << std::endl;
-    if (V == 6) std::cout << Mat[0][1] << std::endl;
 }
 
 Vector2 generateRandomPosition() {
@@ -328,9 +341,11 @@ void Graph::copyList() {
 
     // Copy nodes
     for (auto& node : nodeList) {
-        GraphNode* newNode = new GraphNode(node->ind, node->value, node->position);
+        GraphNode* newNode = new GraphNode(node->ind, node->value);
         newNode->colour = node->colour;
         newNode->visiting = node->visiting;
+        newNode->position = node->position;
+
         newNode->isDragging = node->isDragging;
         newNode->alpha = node->alpha;
         curList.push_back(newNode);
@@ -376,8 +391,8 @@ void Graph::updateState(float deltaTime, float& elapsedTime, int& stateIndex, fl
     // Interpolate node positions
     for (size_t i = 0; i < startList.size(); ++i) {
         Vector2 mixedPosition = {
-            startList[i]->position.x + G * (endList[i]->position.x - startList[i]->position.x),
-            startList[i]->position.y + G * (endList[i]->position.y - startList[i]->position.y)
+            nodeList[i]->position.x,
+            nodeList[i]->position.y
         };
         GraphNode* mixedNode = new GraphNode(startList[i]->ind,startList[i]->value, mixedPosition);
         mixedNode->colour = startList[i]->colour;
@@ -389,10 +404,7 @@ void Graph::updateState(float deltaTime, float& elapsedTime, int& stateIndex, fl
 
     // Interpolate edge positions and colors
     for (size_t i = 0; i < startEdges.size(); ++i) {
-        Vector2 mixedStartPos = {
-            startEdges[i]->startIndex + G * (endEdges[i]->startIndex - startEdges[i]->startIndex),
-            startEdges[i]->endIndex + G * (endEdges[i]->endIndex - startEdges[i]->endIndex)
-        };
+        
 
         GraphEdge* mixedEdge = new GraphEdge(
             startEdges[i]->startIndex,  // Since indices don't change, use the same index
@@ -480,9 +492,23 @@ void Graph::dragNodes() {
     bool isMouseDown = IsMouseButtonDown(MOUSE_LEFT_BUTTON);
     bool isMouseUp = IsMouseButtonReleased(MOUSE_LEFT_BUTTON);
 
-    // Update the node based on mouse input
-    for (auto node : curList) if (node) node->update(mousePosition, isMouseDown, isMouseUp);
-    for (auto node : nodeList) if (node) node->update(mousePosition, isMouseDown, isMouseUp);
+    bool updateNL = false;
+    bool updateCL = false;
+
+    for (auto node : nodeList) {
+        if (node) {
+            node->update(mousePosition, isMouseDown, isMouseUp, nodeList);
+           
+        }
+    }
+
+    for (auto node : curList) {
+        if (node ) {
+            node->update(mousePosition, isMouseDown, isMouseUp, curList);
+            
+        }
+    }
+
 
 }
 
@@ -564,7 +590,7 @@ void renderGraph(Screen& currentScreen) {
         DrawTexture(speed2x, changeSpeed.x, changeSpeed.y, WHITE);
     }
 
-    if (!graph.isInteracting(stateIndexGraph)) graph.dragNodes();
+    graph.dragNodes();
 
     if (!pauseGraph) DrawTexture(pauseButImg, pauseButton.x, pauseButton.y, WHITE);
     else DrawTexture(playButImg, pauseButton.x, pauseButton.y, WHITE);
@@ -653,15 +679,15 @@ void renderGraph(Screen& currentScreen) {
     float textPosX = ccGraph.x + ccGraph.width * 3 / 4 - textWidth / 2+ 42.0f;
     float textPosY = ccGraph.y + ccGraph.height / 2 - fontSize / 2;
     DrawTextEx(font, TextFormat("%d", size), { textPosX - 10, textPosY }, fontSize, 1, WHITE);
-    for (int i = 0; i < 3; i++) {
-        if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
+    for (int i = 0; i < 5; i++) {
+        if (i != 3) if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
     }
     if (checkCollision(ccGraph)) DrawRectangleRec(ccGraph, Color{ 0, 255, 0, 32 });
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
     if (checkClick(returnBar) || checkClick(returnButton)) currentScreen = MENU;
 
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
         if (checkClick(hashtableOptions[i])) {
             if (!graphInteracting) {
 
@@ -693,7 +719,7 @@ void graphInteractingFunction(Interact& state) {
     {
     case CREATE:
     {
-        GraphClear(state);
+        GraphRandom(state);
     } break;
     case INSERT:
     {
@@ -706,6 +732,10 @@ void graphInteractingFunction(Interact& state) {
     case SEARCH:
     {
         GraphConnectedComponents(state);
+    } break;
+    case FILEINTER:
+    {
+        GraphClear(state);
     } break;
 
     default: break;
@@ -764,5 +794,52 @@ void GraphConnectedComponents(Interact& state) {
     state = REST;
 }
 
+void GraphRandom(Interact& state) {
+    graph.clearGraph();
+    graph = Graph();
+    int s = rand() % 15;
+    std::vector<std::vector<int>> randomMatrix = generateRandomAdjacencyMatrix(s, 1, 99);
+    graph.initializeFromMatrix(randomMatrix);
+    graph.copyList();
+    state = REST;
+}
 
+std::vector<std::vector<int>> generateRandomAdjacencyMatrix(int numNodes, int minValue, int maxValue, float density, bool allowSelfLoops) {
+    // Initialize the adjacency matrix with all zeros
+    std::vector<std::vector<int>> adjacencyMatrix(numNodes, std::vector<int>(numNodes, 0));
 
+    // Seed the random number generator with the current time
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+    // Calculate the maximum possible number of edges in an undirected graph
+    int maxEdges = numNodes * (numNodes - 1) / (allowSelfLoops ? 1 : 2);
+
+    // Calculate the number of edges based on the desired density
+    int desiredEdges = static_cast<int>(density * maxEdges);
+
+    // Generate a list of all possible edges
+    std::vector<std::pair<int, int>> potentialEdges;
+    for (int i = 0; i < numNodes; ++i) {
+        for (int j = (allowSelfLoops ? 0 : i + 1); j < numNodes; ++j) {
+            potentialEdges.emplace_back(i, j);
+            if (!allowSelfLoops && i != j) {
+                potentialEdges.emplace_back(j, i); // Ensure symmetry
+            }
+        }
+    }
+
+    // Shuffle the list of potential edges
+    std::random_shuffle(potentialEdges.begin(), potentialEdges.end());
+
+    // Add edges to the adjacency matrix based on the desired number of edges
+    for (int i = 0; i < desiredEdges && i < potentialEdges.size(); ++i) {
+        int u = potentialEdges[i].first;
+        int v = potentialEdges[i].second;
+        int weight = minValue + std::rand() % (maxValue - minValue + 1);
+
+        adjacencyMatrix[u][v] = weight;
+        adjacencyMatrix[v][u] = weight; // Ensure symmetry
+    }
+
+    return adjacencyMatrix;
+}
