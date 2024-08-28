@@ -546,10 +546,10 @@ Trie testTrie;
 
 void initializeTrie() {
     // Example inputs
-    std::vector<std::string> words = { "apple", "banana", "grape", "cherry", "mango","bathroom", "grass"};
+    /*std::vector<std::string> words = { "apple", "banana", "grape", "cherry", "mango","bathroom", "grass"};
     for (const std::string& word : words) {
         testTrie.insert(word);
-    }
+    }*/
    
 }
 
@@ -569,7 +569,12 @@ bool doubleSpeedTrie = false;
 void renderTrie(Screen& currentScreen) {
     DrawTexture(trieBG, 0, 0, WHITE);
     deltaTimeTrie = GetFrameTime();
-
+    if (checkClick(hashtableOptions[5])) {
+        stateIndexTrie = 0;
+        pauseTrie = true;
+        testTrie.clearTree();
+        testTrie = Trie();
+    }
     if (checkClick(changeSpeed)) doubleSpeedTrie = !doubleSpeedTrie;
     if (!doubleSpeedTrie) {
         stepTimeTrie = 1.0f;
@@ -658,7 +663,7 @@ void renderTrie(Screen& currentScreen) {
 
     testTrie.draw();
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
         if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
     }
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
@@ -716,29 +721,33 @@ bool trieGetFile = false;
 
 
 void TrieFile(Interact& state) {
-    if (!trieGetFile) {
+    
         std::string selectedFilePath = FileSelectDialog();
         std::vector<std::string> words = ReadWordsFromFile(selectedFilePath);
+        if (words.size() == 0) {
+            state = REST;
+            return;
+        }
         testTrie.clearTree();
         testTrie = Trie();
         testTrie.finalFile(words, stateIndexTrie, pauseTrie);
-        trieGetFile = true;
-    }
+        state = REST;
+
 }
 
 void TrieInsert(Interact& state) {
-    DrawTexture(insertSection, hashtableOptions[1].x + 90.0f, hashtableOptions[1].y, WHITE);
+    DrawTexture(TrieInsertSection, hashtableOptions[1].x + 90.0f, hashtableOptions[1].y, WHITE);
 
-    if (checkCollision(randomInsert)) DrawRectangleRec(randomInsert, Color{ 0, 255, 0, 32 });
-    if (checkCollision(okInput)) DrawRectangleRec(okInput, Color{ 0, 255, 0, 32 });
-    if (checkCollision(inputSection)) {
-        DrawRectangleRec(inputSection, Color{ 0, 255, 0, 32 });
+    if (checkCollision(TrieInsertRandom)) DrawRectangleRec(TrieInsertRandom, Color{ 0, 255, 0, 32 });
+    if (checkCollision(TrieInsertOK)) DrawRectangleRec(TrieInsertOK, Color{ 0, 255, 0, 32 });
+    if (checkCollision(TrieInsertBox)) {
+        DrawRectangleRec(TrieInsertBox, Color{ 0, 255, 0, 32 });
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
     else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
-    if (checkClick(inputSection)) trieInputClick = true;
-    else if (!checkClick(inputSection) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) trieInputClick = false;
+    if (checkClick(TrieInsertBox)) trieInputClick = true;
+    else if (!checkClick(TrieInsertBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) trieInputClick = false;
 
     if (trieInputClick) {
         int key = GetCharPressed();
@@ -764,15 +773,15 @@ void TrieInsert(Interact& state) {
 
         if (fmod(trieTimePassed, 1.0f) < 0.5f)
         {
-            DrawText("_", (int)inputSection.x + 10 + MeasureText(trieInputString, 20), (int)inputSection.y + 8, 20, DARKGREEN);
+            DrawText("_", (int)TrieInsertBox.x + 10 + MeasureText(trieInputString, 20), (int)TrieInsertBox.y + 8, 20, DARKGREEN);
         }
     }
 
     trieTimePassed = GetTime();
 
-    DrawText(trieInputString, (int)inputSection.x + 7, (int)inputSection.y + 4, 20, DARKGREEN);
+    DrawText(trieInputString, (int)TrieInsertBox.x + 7, (int)TrieInsertBox.y + 4, 20, DARKGREEN);
 
-    if ((checkClick(okInput) || IsKeyPressed(KEY_ENTER)) && !testTrie.isInteracting(stateIndexTrie)) {
+    if ((checkClick(TrieInsertOK) || IsKeyPressed(KEY_ENTER)) && !testTrie.isInteracting(stateIndexTrie)) {
         if (trieCharCount > 0) {
             std::string input = std::string(trieInputString);
             testTrie.finalInsert(input, stateIndexTrie, pauseTrie);
@@ -783,7 +792,7 @@ void TrieInsert(Interact& state) {
         }
     }
 
-    if (checkClick(randomInsert) && !testTrie.isInteracting(stateIndexTrie)) {
+    if (checkClick(TrieInsertRandom)) {
         std::string str = GenerateRandomString(10); // Generate random string of up to 10 characters
         for (int i = 0; i < str.size(); i++) {
             trieInputString[i] = str[i];
@@ -795,17 +804,17 @@ void TrieInsert(Interact& state) {
 
 
 void TrieDelete(Interact& state) {
-    DrawTexture(deleteSection, hashtableOptions[2].x + 90.0f, hashtableOptions[2].y, WHITE);
+    DrawTexture(TrieDeleteSection, hashtableOptions[2].x + 90.0f, hashtableOptions[2].y, WHITE);
 
-    if (checkCollision(okDelete)) DrawRectangleRec(okDelete, Color{ 0, 255, 0, 32 });
-    if (checkCollision(deleteSectionBox)) {
-        DrawRectangleRec(deleteSectionBox, Color{ 0, 255, 0, 32 });
+    if (checkCollision(TrieDeleteOK)) DrawRectangleRec(okDelete, Color{ 0, 255, 0, 32 });
+    if (checkCollision(TrieDeleteBox)) {
+        DrawRectangleRec(TrieDeleteBox, Color{ 0, 255, 0, 32 });
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
     else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
-    if (checkClick(deleteSectionBox)) trieInputClick = true;
-    else if (!checkClick(deleteSectionBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) trieInputClick = false;
+    if (checkClick(TrieDeleteBox)) trieInputClick = true;
+    else if (!checkClick(TrieDeleteBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) trieInputClick = false;
 
     if (trieInputClick) {
         int key = GetCharPressed();
@@ -831,15 +840,15 @@ void TrieDelete(Interact& state) {
 
         if (fmod(trieTimePassed, 1.0f) < 0.5f)
         {
-            DrawText("_", (int)deleteSectionBox.x + 10 + MeasureText(trieInputString, 20), (int)deleteSectionBox.y + 8, 20, DARKGREEN);
+            DrawText("_", (int)TrieDeleteBox.x + 10 + MeasureText(trieInputString, 20), (int)TrieDeleteBox.y + 8, 20, DARKGREEN);
         }
     }
 
     trieTimePassed = GetTime();
 
-    DrawText(trieInputString, (int)deleteSectionBox.x + 7, (int)deleteSectionBox.y + 4, 20, DARKGREEN);
+    DrawText(trieInputString, (int)TrieDeleteBox.x + 7, (int)TrieDeleteBox.y + 4, 20, DARKGREEN);
 
-    if ((checkClick(okDelete) || IsKeyPressed(KEY_ENTER)) && !testTrie.isInteracting(stateIndexTrie)) {
+    if ((checkClick(TrieDeleteOK) || IsKeyPressed(KEY_ENTER)) && !testTrie.isInteracting(stateIndexTrie)) {
         if (trieCharCount > 0) {
             std::string input = std::string(trieInputString);
             testTrie.finalDelete(input, stateIndexTrie, pauseTrie);
@@ -853,17 +862,17 @@ void TrieDelete(Interact& state) {
 
 
 void TrieSearch(Interact& state) {
-    DrawTexture(deleteSection, hashtableOptions[3].x + 90.0f, hashtableOptions[3].y, WHITE);
+    DrawTexture(TrieDeleteSection, hashtableOptions[3].x + 90.0f, hashtableOptions[3].y, WHITE);
 
-    if (checkCollision(okSearch)) DrawRectangleRec(okSearch, Color{ 0, 255, 0, 32 });
-    if (checkCollision(searchSectionBox)) {
-        DrawRectangleRec(searchSectionBox, Color{ 0, 255, 0, 32 });
+    if (checkCollision(TrieSearchOk)) DrawRectangleRec(TrieSearchOk, Color{ 0, 255, 0, 32 });
+    if (checkCollision(TrieSearchBox)) {
+        DrawRectangleRec(TrieSearchBox, Color{ 0, 255, 0, 32 });
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
     else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
-    if (checkClick(searchSectionBox)) trieInputClick = true;
-    else if (!checkClick(searchSectionBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) trieInputClick = false;
+    if (checkClick(TrieSearchBox)) trieInputClick = true;
+    else if (!checkClick(TrieSearchBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) trieInputClick = false;
 
     if (trieInputClick) {
         int key = GetCharPressed();
@@ -889,15 +898,15 @@ void TrieSearch(Interact& state) {
 
         if (fmod(trieTimePassed, 1.0f) < 0.5f)
         {
-            DrawText("_", (int)searchSectionBox.x + 10 + MeasureText(trieInputString, 20), (int)searchSectionBox.y + 8, 20, DARKGREEN);
+            DrawText("_", (int)TrieSearchBox.x + 10 + MeasureText(trieInputString, 20), (int)TrieSearchBox.y + 8, 20, DARKGREEN);
         }
     }
 
     trieTimePassed = GetTime();
 
-    DrawText(trieInputString, (int)searchSectionBox.x + 7, (int)searchSectionBox.y + 4, 20, DARKGREEN);
+    DrawText(trieInputString, (int)TrieSearchBox.x + 7, (int)TrieSearchBox.y + 4, 20, DARKGREEN);
 
-    if ((checkClick(okSearch) || IsKeyPressed(KEY_ENTER)) && !testTrie.isInteracting(stateIndexTrie)) {
+    if ((checkClick(TrieSearchOk) || IsKeyPressed(KEY_ENTER)) && !testTrie.isInteracting(stateIndexTrie)) {
         if (trieCharCount > 0) {
             std::string input = std::string(trieInputString);
             testTrie.finalSearch(input, stateIndexTrie, pauseTrie);

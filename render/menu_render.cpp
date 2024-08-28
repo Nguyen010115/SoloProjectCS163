@@ -20,6 +20,9 @@ Texture2D beeImage;
 Texture2D insertSection;
 Texture2D deleteSection;
 Texture2D createSection;
+Texture2D TrieInsertSection;
+Texture2D TrieDeleteSection;
+
 
 Texture2D speed1x;
 Texture2D speed2x;
@@ -53,6 +56,8 @@ void initImages() {
     slidingBut = LoadTexture("resources/images/slidingbar-button.png");
     speed1x = LoadTexture("resources/images/1x.png");
     speed2x = LoadTexture("resources/images/2x.png");
+    TrieInsertSection = LoadTexture("resources/images/TrieInsertSection.png");
+    TrieDeleteSection = LoadTexture("resources/images/TrieDeleteSection.png");
     
 };
 
@@ -77,6 +82,9 @@ void unloadAll() {
     UnloadTexture(slidingBut);
     UnloadTexture(speed1x);
     UnloadTexture(speed2x);
+    UnloadTexture(TrieInsertSection); 
+    UnloadTexture(TrieDeleteSection);
+
 };
 
 

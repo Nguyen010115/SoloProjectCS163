@@ -435,12 +435,7 @@ void MinHeap::clearTree() {
         }
     }
     curList.clear();
-    for (EdgeHeap* edge : curEdges) {
-        if (edge) {
-            delete edge;
-            edge = nullptr;
-        }
-    }
+   
     curEdges.clear();
 }
 
@@ -534,7 +529,7 @@ bool doubleSpeedHeap = false;
 Interact heapCurInteract = REST;
 
 void initializeHeap() {
-    for (int i = 10; i >= 1; i--) minHeap.insert(i);
+    /*for (int i = 10; i >= 1; i--) minHeap.insert(i);*/
 }
 
 
@@ -710,17 +705,20 @@ float HeaptimePassed = 0.0f;
 bool HeapGetFile = false;
 
 void HeapFile(Interact& state) {
-    if (!HeapGetFile) {
+    
 
         std::string selectedFilePath = FileSelectDialog();
 
         std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
-
+        if (numbers.size() == 0) {
+            state = REST;
+            return;
+        }
         minHeap.clearTree();
         minHeap = MinHeap();
         minHeap.finalFile(numbers, stateIndexHeap, pauseHeap);
         HeapGetFile = true;
-    }
+        state = REST;
 }
 
 

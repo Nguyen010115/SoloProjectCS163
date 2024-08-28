@@ -920,12 +920,11 @@ int Tree234::getStepsSize() {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-//HoneycombNode tests(888, { 200,200 });
 Tree234 testTree;
 
 void initialize234Tree() {
     //Example inputs
-    for (int i = 1; i <= 10; i++) testTree.insert(i);
+    /*for (int i = 1; i <= 10; i++) testTree.insert(i);*/
 }
 
 Interact tree234curInteract = REST;
@@ -942,6 +941,13 @@ bool doubleSpeed234 = false;
 void render234Tree(Screen& currentScreen) {
     DrawTexture(tree234BG, 0, 0, WHITE);
     deltaTime234 = GetFrameTime();
+
+    if (checkClick(hashtableOptions[5])) {
+        stateIndex234 = 0;
+        pause234 = true;
+        testTree.clearTree();
+        testTree = Tree234();
+    }
 
     if (checkClick(changeSpeed)) doubleSpeed234 = !doubleSpeed234;
     if (!doubleSpeed234) {
@@ -1035,7 +1041,7 @@ void render234Tree(Screen& currentScreen) {
 
     testTree.draw();
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
         if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
     }
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
@@ -1094,14 +1100,19 @@ bool tree234getFile = false;
 
 
 void tree234File(Interact& state) {
-    if (!tree234getFile) {
+
         std::string selectedFilePath = FileSelectDialog();
         std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
+        if (numbers.size() == 0) {
+            state = REST;
+            return;
+        }
         testTree.clearTree();
         testTree = Tree234();
         testTree.finalFile(numbers, stateIndex234, pause234);
-        tree234getFile = true;
-    }
+        state = REST;
+
+    
 }
 
 void tree234Insert(Interact& state) {

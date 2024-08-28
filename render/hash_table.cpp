@@ -379,6 +379,14 @@ Rectangle randomCreate;
 Rectangle heapTop;
 Rectangle heapSize;
 
+ Rectangle TrieInsertBox;
+ Rectangle TrieInsertOK;
+ Rectangle TrieInsertRandom;
+ Rectangle TrieDeleteBox;
+ Rectangle TrieDeleteOK;
+ Rectangle TrieSearchBox;
+ Rectangle TrieSearchOk;
+
 
 
 extern HashTable hashTable(12);
@@ -433,6 +441,17 @@ void initializeHash() {
     setupButtonScale(changeSpeed, 1801.4f, 964.8f, 80.0f, 80.0f);
     setupButtonScale(heapTop, 399.3f, 1004.8f, 110.3f, 51.8f);
     setupButtonScale(heapSize, 536.4f, 1005.4f, 151.3f, 51.8f);
+
+    setupButtonScale(TrieInsertBox, 187.3f, 865.5f, 212.3f, 38.5f);
+    setupButtonScale(TrieInsertOK, 420.6f, 865.4f, 36.6f, 36.6f);
+    setupButtonScale(TrieInsertRandom, 470.2f, 863.5f, 40.6f, 40.6f);
+
+    setupButtonScale(TrieDeleteBox, 187.3f, 938.3f, 212.3f, 38.5f);
+    setupButtonScale(TrieDeleteOK, 420.6f, 938.3f, 36.6f, 36.6f);
+
+    setupButtonScale(TrieSearchBox, 187.3f, 1011.5f, 212.3f, 38.5f);
+    setupButtonScale(TrieSearchOk, 420.6f, 1011.4f, 36.6f, 36.6f);
+
 };
 
  bool check = false;
@@ -446,15 +465,18 @@ void renderHashTable(Screen& currentScreen) {
     hashTable.interact();
     hashTable.draw();
     
+    if (checkClick(hashtableOptions[5])) {
+        hashTable.resize(0);
+    }
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 6; i++) {
         if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
     }
-    if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
-    if (checkClick(returnBar) || checkClick(returnButton)) currentScreen = MENU;
+    if (checkCollision(returnButton)) DrawRectangleRec(returnButton, Color{ 0, 255, 0, 32 });
+    if (checkClick(returnButton)) currentScreen = MENU;
    
    
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         if (checkClick(hashtableOptions[i])) { 
             if (!interacting) {
                 curInteract = constants::hashInter[i];
@@ -489,10 +511,32 @@ void hashInteracting(Interact& state) {
     {
         hashSearch(state);
     } break;
-   
+    case FILEINTER:
+    {
+        hashFile(state);
+    } break;
     default: break;
     }
 };
+
+bool getFileHash = false;
+void hashFile(Interact& state) {
+
+        std::string selectedFilePath = FileSelectDialog();
+        std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
+        if (numbers.size() == 0) {
+            state = REST;
+
+            return;
+        }
+        hashTable.resize(numbers[0]);
+        for (int i = 1; i < numbers.size(); i++) {
+            hashTable.insert(numbers[i]);
+        }
+        state = REST;
+
+    
+}
 
 void hashInsert(Interact& state) {
     DrawTexture(insertSection, hashtableOptions[1].x + 90.0f, hashtableOptions[1].y, WHITE);

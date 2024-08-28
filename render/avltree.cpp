@@ -712,10 +712,10 @@ float AVLtimePassed = 0.0f;
 
 
 void initializeAVL() {
-    avl.insert(1);
+    /*avl.insert(1);
     avl.insert(2);
     avl.insert(3);
-    avl.insert(4);
+    avl.insert(4);*/
 }
 
 float deltaTime = 0.0f;
@@ -879,12 +879,17 @@ void avlInteracting(Interact& state) {
 };
 
 void avlFile(Interact& state) {
-    if (!getFile) {
+
         std::string selectedFilePath = FileSelectDialog();
         std::vector<int> numbers = ReadNumbersFromFile(selectedFilePath);
+        if (numbers.size() == 0) {
+            state = REST;
+            return;
+        }
         avl.finalFile(numbers, stateIndex, pause);
-        getFile = true;
-    }
+        state = REST;
+
+
 }
 
 void avlInsert(Interact& state) {

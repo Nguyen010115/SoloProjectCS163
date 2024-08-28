@@ -32,6 +32,9 @@ extern Texture2D insertSection;
 extern Texture2D deleteSection;
 extern Texture2D createSection;
 
+extern Texture2D TrieInsertSection;
+extern Texture2D TrieDeleteSection;
+
 extern Texture2D speed1x;
 extern Texture2D speed2x;
 
@@ -74,6 +77,14 @@ extern Rectangle slidingButton;
 extern Rectangle changeSpeed;
 extern Rectangle heapTop;
 extern Rectangle heapSize;
+
+extern Rectangle TrieInsertBox;
+extern Rectangle TrieInsertOK;
+extern Rectangle TrieInsertRandom;
+extern Rectangle TrieDeleteBox;
+extern Rectangle TrieDeleteOK;
+extern Rectangle TrieSearchBox;
+extern Rectangle TrieSearchOk;
 
 constexpr const Color graphColour[5] = { MAGENTA, MAROON, DARKBLUE, DARKBROWN, DARKGRAY };
 constexpr float minX = 200.0f;
@@ -143,6 +154,7 @@ void hashSearch(Interact& state);
 
 void hashCreate(Interact& state);
 
+void hashFile(Interact& state);
 
 //AVL Tree
 
