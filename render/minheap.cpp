@@ -504,6 +504,18 @@ void MinHeap::finalCreate(int value, int& stateIndex, bool& pause) {
     pause = false;
 }
 
+void MinHeap::getTop(int& stateIndex, bool& pause) {
+    pause = true;
+    stateIndex = 0;
+    steps.clear();
+    stepsEdge.clear();
+    copyHeap();
+    if (heapArray[0]) heapArray[0]->visiting = true;
+    copyHeap();
+    if (heapArray[0]) heapArray[0]->visiting = false;
+    pause = false;
+}
+
 /////////////////////////////////////
 
 MinHeap minHeap;
@@ -517,14 +529,12 @@ bool heapCurInteracting = false;
 Interact heapCurInteract = REST;
 
 void initializeHeap() {
-    //for (int i = 10; i >= 1; i--) minHeap.insert(i);
-    //minHeap.clearTree();
- 
+    for (int i = 10; i >= 1; i--) minHeap.insert(i);
 }
 
 
 void renderHeap(Screen& currentScreen) {
-    DrawTexture(avlBG, 0, 0, WHITE);
+    DrawTexture(heapBG, 0, 0, WHITE);
     deltaTimeHeap = GetFrameTime();
 
     if (!pauseHeap) DrawTexture(pauseButImg, pauseButton.x, pauseButton.y, WHITE);
@@ -614,6 +624,8 @@ void renderHeap(Screen& currentScreen) {
         if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
     }
     if (checkCollision(returnBar)) DrawRectangleRec(returnBar, Color{ 0, 255, 0, 32 });
+    if (checkCollision(heapTop)) DrawRectangleRec(heapTop, Color{ 0, 255, 0, 32 });
+    if (checkClick(heapTop)) minHeap.getTop(stateIndexHeap,  pauseHeap);
     if (checkClick(returnBar) || checkClick(returnButton)) currentScreen = MENU;
     for (int i = 0; i < 5; i++) {
         if (checkClick(hashtableOptions[i])) {
@@ -627,6 +639,7 @@ void renderHeap(Screen& currentScreen) {
             }
         }
     }
+    
     HeapInteracting(heapCurInteract);
 }
 

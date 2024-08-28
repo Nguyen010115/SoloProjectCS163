@@ -64,6 +64,8 @@ public:
     void MinHeap::finalDelete(int value, int& stateIndex, bool& pause);
     bool MinHeap::finalSearch(int value, int& stateIndex, bool& pause);
     void MinHeap::finalCreate(int value, int& stateIndex, bool& pause);
+    void MinHeap::getTop(int& stateIndex, bool& pause);
+    int MinHeap::getSize();
     void MinHeap::clearTree();
 
 private:
