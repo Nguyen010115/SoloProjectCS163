@@ -40,3 +40,10 @@ Vector2 normalizeVector2(Vector2 v) {
 bool checkEqual(Vector2 u, Vector2 v) {
     return (u.x == v.x && u.y == v.y);
 }
+
+float Vector2Distance(const Vector2& v1, const Vector2& v2) {
+    float dx = v2.x - v1.x;
+    float dy = v2.y - v1.y;
+
+    return std::sqrt(dx * dx + dy * dy);
+}
