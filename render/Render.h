@@ -16,6 +16,7 @@ extern Texture2D hashtableBG;
 extern Texture2D avlBG;
 extern Texture2D tree234BG;
 extern Texture2D trieBG;
+extern Texture2D heapBG;
 
 extern Texture2D pauseButImg;
 extern Texture2D playButImg;
@@ -71,6 +72,7 @@ extern Rectangle pauseButton;
 extern Rectangle slidingButton;
 
 extern Rectangle changeSpeed;
+extern Rectangle heapTop;
 
 constexpr const Color graphColour[5] = { MAGENTA, MAROON, DARKBLUE, DARKBROWN, DARKGRAY };
 constexpr float minX = 200.0f;
@@ -111,6 +113,9 @@ Vector2 normalizeVector2(Vector2 v);
 Vector2 CalculateCenteredTextPosition(Vector2 texturePos, float textureWidth, float textureHeight, const char* text, int fontSize);
 
 bool checkEqual(Vector2 u, Vector2 v);
+
+float Vector2Distance(const Vector2& v1, const Vector2& v2);
+
 //Button
 bool checkClick(Rectangle& button);
 

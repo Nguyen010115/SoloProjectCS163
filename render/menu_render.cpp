@@ -7,6 +7,7 @@ Texture2D hashtableBG;
 Texture2D avlBG;
 Texture2D tree234BG;
 Texture2D trieBG;
+Texture2D heapBG;
 
 Texture2D pauseButImg;
 Texture2D playButImg;
@@ -39,6 +40,7 @@ void initImages() {
     avlBG = LoadTexture("resources/images/avl_BG.png");
     tree234BG = LoadTexture("resources/images/234_BG.png");
     trieBG = LoadTexture("resources/images/trie_BG.png");
+    heapBG = LoadTexture("resources/images/heap_BG.png");
 
     honeycomb = LoadTexture("resources/images/honeycomb.png");
     honeydrop = LoadTexture("resources/images/honeydrop.png");
@@ -51,21 +53,32 @@ void initImages() {
     slidingBut = LoadTexture("resources/images/slidingbar-button.png");
     speed1x = LoadTexture("resources/images/1x.png");
     speed2x = LoadTexture("resources/images/2x.png");
+    
 };
 
 void unloadAll() {
     UnloadFont(font);
+
     UnloadTexture(menuBG);
     UnloadTexture(hashtableBG);
+    UnloadTexture(avlBG);
+    UnloadTexture(tree234BG);
+    UnloadTexture(trieBG);
+    UnloadTexture(heapBG);
+
     UnloadTexture(honeycomb);
     UnloadTexture(honeydrop);
     UnloadTexture(beeImage);
     UnloadTexture(insertSection);
     UnloadTexture(deleteSection);
     UnloadTexture(createSection);
-    UnloadTexture(tree234BG);
-    UnloadTexture(loadingScreen);
+    UnloadTexture(pauseButImg);
+    UnloadTexture(playButImg);
+    UnloadTexture(slidingBut);
+    UnloadTexture(speed1x);
+    UnloadTexture(speed2x);
 };
+
 
 void initializeMenu() {
     for (int i = 0; i < constants::MAX_DS_COUNT; i++)

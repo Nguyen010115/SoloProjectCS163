@@ -647,16 +647,34 @@ avlNode* avlTree::searchRecursive(avlNode* node, int value) {
 }
 
 void avlTree::clearTree() {
+    // Recursively delete all nodes in the tree
     clearTreeRecursive(root);
-    root = nullptr;  // Reset the root to nullptr after clearing the tree
+
+    // Reset the root to nullptr after clearing the tree
+    root = nullptr;
+
+    // Delete all dynamically allocated nodes in nodeList
     nodeList.clear(); // Clear the list of nodes
+
     edgeList.clear(); // Clear the list of edges
+
+    // Clear the history of steps and dynamically allocated nodes in steps
+    for (auto& step : steps) {
+        for (auto& node : step) {
+            if (node != nullptr) {
+                delete node;
+                node = nullptr;
+            }
+        }
+    }
     steps.clear();    // Clear the history of steps
+
     stepRoots.clear(); // Clear the history of root steps
     stepEdges.clear(); // Clear the history of edges steps
     curList.clear();  // Clear the current list of nodes
     size = 0;         // Reset the size of the tree
 }
+
 
 void avlTree::clearTreeRecursive(avlNode* node) {
     if (node == nullptr) return;
