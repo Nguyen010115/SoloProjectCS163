@@ -109,7 +109,7 @@ int Trie::countLeaves(TrieNode* node) {
     return leafCount;
 }
 
-bool Trie::removeHelper(TrieNode* node, const std::string& word, int depth) {
+bool Trie::removeHelper(TrieNode* node, const std::string& word, int depth, std::vector<TrieNode*>& shouldDelete) {
     node->visiting = true;
     copyTree();
     // Base case: if we've reached the end of the word
@@ -138,10 +138,11 @@ bool Trie::removeHelper(TrieNode* node, const std::string& word, int depth) {
     }
 
     // Recursively delete the child node
-    bool shouldDeleteChild = removeHelper(childNode, word, depth + 1);
+    bool shouldDeleteChild = removeHelper(childNode, word, depth + 1, shouldDelete);
 
     // If the child should be deleted, remove it from the map
     if (shouldDeleteChild) {
+        shouldDelete.push_back(childNode);
         childNode->ch = '0';
         node->children.erase(ch);
         node->visiting = false;
@@ -158,12 +159,14 @@ bool Trie::removeHelper(TrieNode* node, const std::string& word, int depth) {
 }
 
 
-bool Trie::remove(const std::string& word) {
+void Trie::remove(const std::string& word) {
     if (root == nullptr || word.empty()) {
-        return false;
+        return;
     }
-
-    return removeHelper(root, word, 0);
+    std::vector<TrieNode*> shouldDelete;
+    removeHelper(root, word, 0, shouldDelete);
+    std::cout << shouldDelete.size() << std::endl; 
+    copyTree();
 }
 
 
@@ -334,7 +337,7 @@ void Trie::updateState(int& stateIndex, float& elapsedTime, float deltaTime, flo
 
     elapsedTime += deltaTime;
     float G = elapsedTime / step;
-    if (G > step) G = step;
+    if (G > 1.0f) G = 1.0f;
 
     const std::vector<TrieNode*>& startNodeList = steps[stateIndex];
     const std::vector<TrieNode*>& endNodeList = steps[stateIndex + 1];
@@ -374,7 +377,7 @@ void Trie::updateState(int& stateIndex, float& elapsedTime, float deltaTime, flo
         }
     }
 
-    if (G >= step) {
+    if (G >= 1.0f) {
         stateIndex++;  // Move to the next state
         elapsedTime = 0.0f;  // Reset the elapsed time
     }

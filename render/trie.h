@@ -34,7 +34,9 @@ public:
 
     void insert(const std::string& word);
     bool search(const std::string& word);
-    bool remove(const std::string& word);
+    void remove(const std::string& word);
+    bool removeHelper(TrieNode* node, const std::string& word, int depth, std::vector<TrieNode*> &shouldDelete);
+
     void updatePositions();
     void updateNodePosition(TrieNode* root, int level, float minX, float maxX, float levelSpacing);
     int countLeaves(TrieNode* node);
@@ -45,6 +47,7 @@ public:
 
     void mixNodes(TrieNode* target, TrieNode* start, TrieNode* end, float mixCoeff);
     void mixEdge(TrieEdge& target, const TrieEdge* start, const TrieEdge* end, float mixCoeff);
+
     void updateState(int& stateIndex, float& elapsedTime, float deltaTime, float step);
     int getStepsSize();
 
@@ -66,7 +69,6 @@ private:
     std::vector<std::vector<TrieEdge*>> stepsEdge;
 
     int size = 0;
-    bool removeHelper(TrieNode* node, const std::string& word, int depth);
     void deleteNode(TrieNode* node);
 };
 

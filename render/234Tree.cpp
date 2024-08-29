@@ -1280,7 +1280,7 @@ void tree234Search(Interact& state) {
         while (key > 0)
         {
             // NOTE: Only allow keys in range [32..125]
-            if ((key >= 48) && (key <= 57) && (tree234numCount < 2))
+            if ((key >= 48) && (key <= 57) && (tree234numCount < 3))
             {
                 tree234inputNumber[tree234numCount] = (char)key;
                 tree234inputNumber[tree234numCount + 1] = '\0'; // Add null terminator at the end of the string.

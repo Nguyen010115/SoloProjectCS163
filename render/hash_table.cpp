@@ -468,8 +468,10 @@ void renderHashTable(Screen& currentScreen) {
     hashTable.draw();
     
     if (checkClick(hashtableOptions[5])) {
-        hashTable.resize(0);
+        hashTable.~HashTable(); // Explicitly call the destructor to free the old data
+        new (&hashTable) HashTable(12); // Placement new to reinitialize the object
     }
+
 
     for (int i = 0; i < 6; i++) {
         if (checkCollision(hashtableOptions[i])) DrawRectangleRec(hashtableOptions[i], Color{ 0, 255, 0, 32 });
@@ -531,7 +533,9 @@ void hashFile(Interact& state) {
 
             return;
         }
-        hashTable.resize(numbers[0]);
+        if (numbers[0] > 0) hashTable.resize(numbers[0]);
+        else return;
+        
         for (int i = 1; i < numbers.size(); i++) {
             hashTable.insert(numbers[i]);
         }
@@ -840,7 +844,7 @@ void hashCreate(Interact& state) {
                 inputNumber[numCount] = '\0';
             }
             int inputRan = std::stoi(inputRandom);
-            hashTable.addRandom(input);
+            hashTable.addRandom(inputRan);
             while (randomCount > 0) {
                 randomCount--;
                 inputRandom[randomCount] = '\0';

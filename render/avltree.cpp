@@ -1057,7 +1057,7 @@ void avlSearch(Interact& state) {
         while (key > 0)
         {
             // NOTE: Only allow keys in range [32..125]
-            if ((key >= 48) && (key <= 57) && (AVLnumCount < 2))
+            if ((key >= 48) && (key <= 57) && (AVLnumCount < 3))
             {
                 AVLinputNumber[AVLnumCount] = (char)key;
                 AVLinputNumber[AVLnumCount + 1] = '\0'; // Add null terminator at the end of the string.

@@ -482,8 +482,11 @@ bool MinHeap::finalSearch(int value, int& stateIndex, bool& pause)
     steps.clear();
     stepsEdge.clear();
     copyHeap();
+    if (!search(value)) {
+        pause = false;
+        return false;
+    }
     pause = false;
-    if (!search(value)) return false;
     return true;
 }
 
@@ -876,7 +879,7 @@ void HeapSearch(Interact& state) {
         int key = GetCharPressed();
 
         while (key > 0) {
-            if ((key >= 48) && (key <= 57) && (HeapnumCount < 2)) {
+            if ((key >= 48) && (key <= 57) && (HeapnumCount < 3)) {
                 HeapinputNumber[HeapnumCount] = (char)key;
                 HeapinputNumber[HeapnumCount + 1] = '\0';
                 HeapnumCount++;

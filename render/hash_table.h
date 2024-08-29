@@ -110,6 +110,15 @@ public:
     // Constructor
     HashTable(int size);
 
+    HashTable& operator=(const HashTable& other) {
+        if (this == &other) return *this; // Handle self-assignment
+
+        // Copy or move the necessary resources
+        // For example, if you have dynamic memory, deep copy it here
+
+        return *this;
+    }
+
     // Destructor
     ~HashTable();
 
