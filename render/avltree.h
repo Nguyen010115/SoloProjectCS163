@@ -126,17 +126,17 @@ avlTree::~avlTree() {
 
 
 	// Clear all steps
-	for (auto& step : steps) {
+	/*for (auto& step : steps) {
 		if (step[0]) clearTree(step[0]);
-	}
+	}*/
 	steps.clear();
 
 	// If nodeList or curList have any dynamically allocated nodes, delete them as well
 	nodeList.clear();
 
-	for (auto& step : steps) {
+	/*for (auto& step : steps) {
 		if (step[0]) clearTree(step[0]);
-	}
+	}*/
 	stepRoots.clear();
 
 	for (auto* node : curList) {

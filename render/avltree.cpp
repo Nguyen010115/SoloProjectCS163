@@ -334,7 +334,7 @@ void avlTree::printInOrder(avlNode* node) {
 
 void avlTree::updateState(int& stateIndex, float& elapsedTime, float deltaTime) {
     if (stateIndex < 0 || stateIndex >= steps.size() - 1) return;
-
+    if (steps.size() == 0) return;
     float G = elapsedTime / deltaTime;
     if (G > 1.0f) G = 1.0f; 
 
