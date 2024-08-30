@@ -11,7 +11,7 @@ struct Edge {
         : startPos(start), endPos(end), alpha(a) {}
 
     void draw() {
-        if (endPos.x > 100.0f) DrawLineEx(startPos, endPos, 2.0f, Fade(BLACK, alpha));
+        /*if (endPos.x > 100.0f)*/ DrawLineEx(startPos, endPos, 2.0f, Fade(BLACK, alpha));
     }
 };
 
